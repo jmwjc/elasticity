@@ -1,0 +1,130 @@
+\chapter{连续体变形}
+应变可以采用多种不同的方式进行衡量，本章介绍最为常用的一种多维情况下的应变描述，并将应变逐步退化为小变形情况，推导多维情况下几何方程表达式。同时，介绍空间中应变的一些特性，如体积应变、变形协调方程等。
+\section{应变}
+在多维情况下，应变可通过微元段的变形进行衡量。如图所示，在点$\boldsymbol x$处取一微元段$d\boldsymbol x$，微元体经过变形后变为微元体$d\boldsymbol x'$，根据几何关系有
+\begin{equation}\label{ch_kinematics:deformation}
+d\boldsymbol x' = d\boldsymbol x + \boldsymbol u(\boldsymbol x + d\boldsymbol x) - \boldsymbol u(\boldsymbol x)
+\end{equation}
+式中$\boldsymbol u$为位移，根据极限的定义有如下关系
+\begin{equation}
+\lim_{d\boldsymbol x\rightarrow \boldsymbol 0} \frac{\boldsymbol u(\boldsymbol x + d\boldsymbol x)-\boldsymbol u(\boldsymbol x)}{d\boldsymbol x} = \frac{d\boldsymbol u}{d\boldsymbol x} = \boldsymbol u \nabla = u_{i,j} \boldsymbol e_i \otimes \boldsymbol e_j
+\end{equation}
+或当$d\boldsymbol x\rightarrow \boldsymbol 0$，有
+\begin{equation}\label{ch_kinematics:lim}
+\boldsymbol u(\boldsymbol x + d\boldsymbol x) - \boldsymbol u(\boldsymbol x) = \boldsymbol u \nabla \cdot d\boldsymbol x
+\end{equation}
+将式\eqref{ch_kinematics:lim}代入式\eqref{ch_kinematics:deformation}可得变形后微元段表达式为
+\begin{equation}\label{ch_kinematics:kin}
+    \begin{split}
+        d\boldsymbol x' &= d\boldsymbol x + \boldsymbol u \nabla \cdot d\boldsymbol x \\
+                        &= (dx_i + u_{i,j} dx_j) \boldsymbol e_i \\
+                        &= (\delta_{ij} + u_{i,j})dx_j \boldsymbol e_i \\
+    \end{split}
+\end{equation}\par
+此时，微元段的变形量可通过变形前后的长度平方差进行衡量。变形前的长度平方为$ds^2=d\boldsymbol x \cdot d\boldsymbol x$，变形后的长度平方差为$ds'^2=d\boldsymbol x' \cdot d\boldsymbol x'$，两者的差为
+\begin{equation}
+\begin{split}
+    ds'^2 - ds^2 &= d\boldsymbol x' \cdot d\boldsymbol x' - d\boldsymbol x \cdot d\boldsymbol x \\
+                 &= (\delta_{ki} + u_{k,i})(\delta_{kj} + u_{k,j}) dx_i dx_j - dx_k dx_k \\
+                 &= (\delta_{ki}\delta_{kj} + u_{i,j} + u_{j,i} + u_{k,i}u_{k,j}) dx_i dx_j - dx_k dx_k \\
+                 &= dx_i (u_{i,j} + u_{j,i} + u_{k,i}u_{k,j}) dx_j \\
+                 &= dx_i \; 2E_{ij} \; dx_j
+                  = d\boldsymbol x \cdot 2\boldsymbol E \cdot d\boldsymbol x \\
+\end{split}
+\end{equation}
+式中$\boldsymbol E$为\textbf{格林拉格朗日应变}（Green-Lagrangian Strain），其具有如下张量和分量表达式为
+\begin{subequations}
+\begin{align}
+    &E_{ij} = \frac{1}{2}(u_{i,j} + u_{j,i} + u_{k,i}u_{k,j}) \\
+    &\boldsymbol E = \frac{1}{2}(\boldsymbol u \nabla + \nabla \boldsymbol u + \nabla \boldsymbol u \cdot \boldsymbol u \nabla)
+\end{align}
+\end{subequations} \par
+从上式中可以看出，格林拉格朗日应变为非线性应力应变关系，实际上是用于大变形情况的一种应变衡量方式。在此基础上忽略格林拉格朗日应变中的高阶项可得小变形情况下的应变表达式为
+\begin{subequations}\label{ch_kinematics:strain}
+\begin{align}
+&\varepsilon_{ij} = \frac{1}{2}(u_{i,j}+u_{j,i}) \\
+&\boldsymbol \varepsilon = \frac{1}{2}(\boldsymbol u \nabla + \nabla \boldsymbol u)
+\end{align}
+\end{subequations}\par
+值得注意的是，小变形情况下的应变表达式\eqref{ch_kinematics:strain}与第\ref{introduction}章中一维情况的应变表达式\eqref{ch_introduction:kin}保持一致。式\eqref{ch_kinematics:strain}中$i=j=1$时即为一维情况下应变表达式，$\varepsilon=\varepsilon_{11} = u_{1,1} = u_{,x}$。
+
+\section{转动}
+根据式\eqref{ch_kinematics:kin}可知，微元段的总变形量可表示为
+\begin{equation}
+\frac{d\boldsymbol x'-d\boldsymbol x}{d\boldsymbol x} = \boldsymbol u \nabla
+\end{equation}
+总变形可采用应变\eqref{ch_kinematics:strain}表示为
+\begin{equation}
+\boldsymbol u \nabla = \frac{1}{2}(\boldsymbol u \nabla + \nabla \boldsymbol u) + \frac{1}{2}(\boldsymbol u \nabla - \nabla \boldsymbol u) = \boldsymbol \varepsilon + \boldsymbol \omega
+\end{equation}
+式中$\boldsymbol \omega$称为转动张量，其张量和分量表达式为
+\begin{subequations}\label{ch_kinematics:rotation}
+\begin{align}
+&\omega_{ij} = \frac{1}{2}(u_{i,j}-u_{j,i}) \\
+&\boldsymbol \omega = \frac{1}{2}(\boldsymbol u \nabla - \nabla \boldsymbol u)
+\end{align}
+\end{subequations}
+从转动张量的表达式可以看出，与应变张量不同，转动张量并不是对称张量，而是反对称张量，即$\omega_{ij}=-\omega_{ji}$。转动张量除了可以采用2阶张量描述外，还可以采用1阶张量进行表示
+\begin{equation}
+    \omega_1 = \omega_{23},\quad \omega_2 = \omega_{31},\quad \omega_3 = \omega_{12}
+\end{equation}
+\begin{equation}
+    \boldsymbol \omega = \nabla \times \boldsymbol u
+\end{equation}\par
+利用应变张量$\boldsymbol \varepsilon$和转动张量$\boldsymbol \omega$，变形后的微元段$d\boldsymbol x'$可表示为
+\begin{equation}
+d\boldsymbol x' = (\boldsymbol 1 + \boldsymbol \varepsilon + \boldsymbol \omega) \cdot d\boldsymbol x
+\end{equation}
+式中$\boldsymbol 1 \cdot d\boldsymbol x=d\boldsymbol x$代表变形前的微元段，应变张量$\boldsymbol \varepsilon$描述微元段拉伸、剪切变形，而$\boldsymbol \omega$则描述微元段的转动。如果微元段仅有转动，没有拉伸与剪切，即d$\boldsymbol x' = (\boldsymbol 1 + \boldsymbol \omega)\cdot d\boldsymbol x$，通过转动张量的反对称性并忽略高阶项，可证明变形后的微元段长度没有变化
+\begin{equation}
+\begin{split}
+    ds'^2 &= d\boldsymbol x' \cdot d\boldsymbol x' \\
+          &= (\delta_{ki}+\omega_{ki})(\delta_{kj}+\omega_{kj}) dx_i dx_j \\
+          &= dx_k dx_k + (\underbrace{\omega_{ij}+\omega_{ji}}_{=0}+\omega_{ki}\omega_{kj}) dx_i dx_j \\
+          &\approx dx_k dx_k = d\boldsymbol x \cdot d\boldsymbol x = ds^2
+\end{split}
+\end{equation}
+
+\section{体积应变}
+与应力相同，应变可通过谱分解分为平均应变$\varepsilon_m$和偏应变张量分量$e_{ij}$，其表达式为
+\begin{equation}
+\varepsilon_m = \frac{1}{3}\varepsilon_{kk},\quad e_{ij} = \varepsilon_{ij} - \varepsilon_m \delta_{ij} 
+\end{equation}
+其中，$\varepsilon_{kk}$也称为体积应变。体积应变描述以微元段为对角线所在微元体的体积变化率，变形前后该微元体的体积分别为$V=dx_1dx_2dx_3$、$V'=dx'_1dx'_2dx'_3$，此时，体积应变为
+\begin{equation}
+\begin{split}
+    \frac{V'-V}{V} &= \frac{dx'_1dx'_2dx'_3-dx_1dx_2dx_3}{dx_1dx_2dx_3} \\
+                   &= \frac{(\delta_{1i}+\varepsilon_{1i})(\delta_{2j}+\varepsilon_{2j})(\delta_{3k}+\varepsilon_{3k})dx_idx_jdx_k-dx_1dx_2dx_3}{dx_1dx_2dx_3}\\
+                   &\approx \frac{(\delta_{1i}\delta_{2j}\delta_{3k}+\delta_{2j}\delta_{3k}\varepsilon_{1i}+\delta_{1i}\delta_{3k}\varepsilon_{2j}+\delta_{1i}\delta_{2j}\varepsilon_{3k})dx_idx_jdx_k-dx_1dx_2dx_3}{dx_1dx_2dx_3}\\
+                   &= \frac{\varepsilon_{1i}dx_idx_2dx_3+\varepsilon_{2j}dx_1dx_jdx_3+\varepsilon_{3k}dx_1dx_2dx_k}{dx_1dx_2dx_3}\\
+                   &= \varepsilon_{11}+\varepsilon_{22}+\varepsilon_{33}=\varepsilon_{kk}\\
+\end{split}
+\end{equation}
+\section{变形协调方程}
+根据应变张量表达式\eqref{ch_kinematics:strain}可以看出，应变分量之间并不是独立的，而是存在一定的关系。如在二维情况下，应变分量满足如下关系
+\begin{equation}
+\begin{split}
+    \varepsilon_{11,22} + \varepsilon_{22,11} &= u_{1,122} + u_{2,211} \\
+                                              &= (u_{1,2} + u_{2,1})_{,12} \\
+                                              &= 2\varepsilon_{12,12}
+\end{split}
+\end{equation}
+上式也可以改写为
+\begin{equation}
+    \varepsilon_{ii,jj} - \varepsilon_{ij,ij} = 0,\quad i,j=1,2
+\end{equation}\par
+如上所述应变分量之间的关系称为\textbf{变形协调方程}，变形协调方程在解析逆解法和半逆解法的求解过程中起到一定作用。三维情况下的变形协调方程如下所示
+\begin{equation}
+\begin{cases}
+    \varepsilon_{11,22} + \varepsilon_{22,11} = \varepsilon_{12,12} \\
+    \varepsilon_{22,33} + \varepsilon_{33,22} = \varepsilon_{23,23} \\
+    \varepsilon_{33,11} + \varepsilon_{11,33} = \varepsilon_{13,13} \\
+    \varepsilon_{11,23} = (- \varepsilon_{23,1} + \varepsilon_{13,2} + \varepsilon_{12,3})_{,1} \\
+    \varepsilon_{22,13} = (  \varepsilon_{23,1} - \varepsilon_{13,2} + \varepsilon_{12,3})_{,2} \\
+    \varepsilon_{33,12} = (  \varepsilon_{23,1} + \varepsilon_{13,2} - \varepsilon_{12,3})_{,3}
+\end{cases}
+\end{equation}
+同样地，上式也可改写为哑标求和形式
+\begin{equation}
+    \varepsilon_{ij,kl} + \varepsilon_{kl,ij} - \varepsilon_{ik,jl} - \varepsilon_{jl,ik} = 0
+\end{equation}

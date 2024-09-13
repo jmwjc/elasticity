@@ -1,0 +1,343 @@
+\chapter{绪论}\label{introduction}
+
+本章前半部分主要介绍弹塑性力学课程的主要学习内容，通过一维拉压杆问题介绍课程的知识体系架构。本章后半部分介绍课程所需的数学工具——张量运算的符号定义和基本运算规则。
+
+\section{拉压杆问题}
+\subsection{平衡微分方程}
+考虑如图所示的杆结构，该杆长度为$L$，横截面积为$A$。杆的左端固定，右端施加大小为$P$的拉力，杆整体施加单位长度的体力$b$。取一微元体$\Delta x$进行受力分析，微元体的左右两端收到内力（轴力）$F_N$的作用。$F_N$以拉为正、压为负，且$F_N$是关于$x$的函数。此时，微元体左端的轴力大小可表示为$F_N(x)$，方向为$x$轴负方向；微元体右端轴力的大小为$F_N(x+\Delta x)$，方向为$x$轴正方向。由$x$方向的平衡方程有
+\begin{equation} \label{ch_introduction:xeq}
+F_N(x+\Delta x) - F_N(x) + b \Delta x = 0
+\end{equation}
+根据极限的定义有
+\begin{equation} \label{ch_introduction:lim}
+    \lim_{\Delta x \rightarrow 0} \frac{f(x+\Delta x) - f(x)}{\Delta x} = \frac{df}{dx} = f_{,x}
+\end{equation}
+平衡方程\eqref{ch_introduction:xeq}中，当$\Delta x \rightarrow 0$，根据关系式\eqref{ch_introduction:lim}可得\textbf{平衡微分方程}
+\begin{equation}
+    F_{N,x} + b = 0, \quad 0 < x < L
+\end{equation} \par
+平衡微分方程描述杆件内部内力和体力之间的关系，杆件内部每一点处均满足该方程。\par
+
+\subsection{几何方程}
+接下来准备采用位移$u$描述杆件的变形，为了描述杆件内部点$x$处的变形如图所示，同样取微元体$\Delta x$进行分析，经过外力作用下，微元体移动且变形为微元体$\Delta x'$。此时，微元体左端的位移为$u(x)$，右端位移即为$u(x+\Delta x)$。根据几何关系有
+\begin{equation}
+    \Delta x + u(x+\Delta x) = u(x) + \Delta x' \; \Rightarrow \; \Delta x' - \Delta x = u(x+\Delta x) - u(x)
+\end{equation}
+变形则通过应变$\varepsilon$进行衡量，在一维情况下应变为单位长度的变形量，引入极限定义式\eqref{ch_introduction:lim}有
+\begin{equation}\label{ch_introduction:kin}
+    \varepsilon = \frac{\Delta x' - \Delta x}{\Delta x} = \frac{u(x+\Delta x) - u(x)}{\Delta x} \approx u_{,x}
+\end{equation}
+上式称为\textbf{几何方程}，几何方程描述了位移和变形（应变）之间的关系。\par
+值得注意的是，几何方程\eqref{ch_introduction:kin}满足线性函数的定义，即函数$f$满足下列关系式
+\begin{equation}
+\begin{cases}
+f(x+y) = f(x) + f(y) \\ f(\alpha x) = \alpha f(x)
+\end{cases}
+\end{equation}
+称$f$为线性函数。显然式\eqref{ch_introduction:kin}满足上述关系。除了线性的几何方程外，某些弹性力学问题的几何方程为非线性函数，如大变形问题，其几何方程为
+\begin{equation}
+    \varepsilon = u_{,x} + \frac{1}{2} u_{,x}^{2}
+\end{equation} \par
+
+\subsection{物理方程}
+\textbf{物理方程}描述应力与应变直接的关系，应力指单位面积下所收到内力的大小，具体可参见后续章节。在一维情况下，应力$\sigma$为
+\begin{equation}
+    \sigma = \frac{F_N}{A}
+\end{equation}
+其中，$A$为横截面积。\par
+应力应变之间的关系一般有弹性和塑性两种，弹性为外力卸载后，物体可恢复为原来的形状；而塑性情况下，外力去除后会产生不可恢复的变形。如图所示的应力应变关系图中，弹性卸载过程按原路径返回，而塑性情况下，应力卸载后能有一部分残留的应变，称该应变为塑性应变$\varepsilon^p$。\par
+应力应变关系除了弹性、塑性区分外，还可以分为线性和非线性，如
+\begin{equation}
+\begin{cases}
+    \sigma = E \varepsilon, & \text{Linear} \\
+    \sigma = E \varepsilon^2, & \text{Non-linear}
+\end{cases}
+\end{equation}
+其中，$E$为杨氏模量。\par
+
+\subsection{边界条件}
+边界条件主要分为两种，一种需要满足边界上的外力和内力之间的关系，称之为\textbf{应力边界条件或自然边界条件}$\Gamma^t$；另一种是约束位移的边界条件，称之为\textbf{位移边界条件或强制（本质）边界条件}$\Gamma^g$。两类边界条件满足$\Gamma^t \cap \Gamma^g = \varnothing,\; \Gamma^t \cup \Gamma^g = \Gamma$时，弹性力学问题存在唯一解。\par
+应力边界条件同样可取边界处的微元体$\Delta x$进行分析，如图所示，微元体左端受轴力$F_N(x)$作用，右端受外力$P$作用，同时微元体内部受体力$b$作用，根据$x$方向平衡条件有
+\begin{equation}
+P - F_N(L) + b \Delta x = 0
+\end{equation}
+当$\Delta x \rightarrow 0$时
+$$
+F_N(L) = EAu_{,x}(L) = P
+$$
+位移边界条件相较应力边界条件要简单许多，本问题的位移边界条件为杆件左端固定，即
+\begin{equation}
+u(0) = 0
+\end{equation}\par
+
+\subsection{小节}
+上述各方程即为求解弹性力学问题的基本方程，这些方程化综合简为\textbf{弹性力学方程组}。本节所示一维拉压杆问题的弹性力学方程组为
+\begin{subequations}\label{ch_introduction:strong}
+    \begin{align}
+        &(EAu_{,x})_{,x} + b = 0, \quad 0<x<L\label{ch_introduction:eg1} \\
+        &EAu_{,x}(L) = P\label{ch_introduction:eg2} \\
+        &u(0) = 0\label{ch_introduction:eg3}
+    \end{align}
+\end{subequations}
+假设体力$b$和拉力$P$均为常数，对式\eqref{ch_introduction:eg1}进行两次积分，积分过程中产生的待定系数通过式\eqref{ch_introduction:eg2}和\eqref{ch_introduction:eg3}确定，可得位移的解析表达式为
+\begin{equation}\label{ch_introduction:ext}
+    u(x) = - \frac{b}{2EA} x^2 + \frac{P+bL}{EA}x
+\end{equation}
+\par
+弹性力学方程组是一类常见的偏微分方程组，各个方程确定了位移、应变、应力和边界条件（给定的位移和外力）之间的关系。每组关系之间均会存在线性关系和非线性关系，其中的非线性关系就可以相应的称为\textbf{几何非线性、材料非线性和边界条件非线性}。本教程主要学习先弹性部分内容和小部分塑性内容，这些内容遵循下列基本假定
+\begin{itemize}
+    \item \textbf{连续性}：位移$u$在全域可微（导数存在）;
+    \item \textbf{小变形}：几何方程为线性方程;
+    \item \textbf{弹性}：可恢复性;
+    \item \textbf{均匀性}：材料系数与位置无关;
+    \item \textbf{各向同性}：材料系数与方向无关。
+\end{itemize} \par
+本节内容即为本教程所有内容的一个缩影，后续章节将会学习弹性力学方程组中各个方程是如何定义和得到的，并学习如何采用数值求解的方法（有限元法）求得相应的数值近似解。
+
+\section{张量}
+张量是非常实用且重要的数学工具，它可以简化方程的表达式和推导过程。本节将简要介绍张量的定义和一些常用的运算规则，其内容将有助于后续章节的学习。
+
+\subsection{一阶张量}
+张量与向量、矩阵非常类似，但又不完全一样。一阶张量与向量一样均，均为矢量（具有方向）。这里我们采用粗体表示矢量，在空间中的一点$\boldsymbol x$可用张量表示为
+\begin{equation}\label{ch_introduction:coor}
+\boldsymbol x = x_1 \boldsymbol e_1 + x_2 \boldsymbol e_2 + x_3 \boldsymbol e_3 = x_i \boldsymbol e_i
+\end{equation}
+其中，$x_i$称为张量$\boldsymbol x$的分量，下标$i=1,2,3$分别对应$x,y,z$方向。$\boldsymbol e_i$为$x_i$轴的基向量
+\begin{equation}
+\boldsymbol e_1 =
+\begin{Bmatrix}
+1\\0\\0
+\end{Bmatrix}, \quad
+\boldsymbol e_2 =
+\begin{Bmatrix}
+0\\1\\0
+\end{Bmatrix}, \quad
+\boldsymbol e_3 =
+\begin{Bmatrix}
+0\\0\\1
+\end{Bmatrix}
+\end{equation}\par
+式\eqref{ch_introduction:coor}中的第二个等式是通过\textbf{Einstein求和公式}得到的，该求和公式要求表达式中出现两个相同的下标时，表达式需要对这个下标等于$1,2,3$情况进行求和。例如，$a_i,b_i$分别为一阶张量$\boldsymbol a, \boldsymbol b$的分量时，根据Einstein求和公式，下式成立。
+\begin{equation}
+a_1 b_1 + a_2 b_2 + a_3 b_3 = a_i b_i
+\end{equation}\par
+Einstein求和公式能将求和过程的表达式进行简化，在三维的弹性力学推导中有大大降低了公式的复杂程度。\par
+
+\subsection{高阶张量}
+高阶张量可通过一阶张量和并矢算子（Dyad product）得到，两个基向量的并矢过程可表示为
+\begin{equation}
+    \boldsymbol e_i \boldsymbol e_j \quad \mathrm{or} \quad \boldsymbol e_i \otimes \boldsymbol e_j
+\end{equation}
+这里需要注意，并矢得到的二阶基向量并没有明确的物理含义，在不同情况下的意义可能不一样，可能代表位置，或是代表方向。不是一般性，两个一阶张量$\boldsymbol u$、$\boldsymbol v$ 的并矢过程可表示为
+\begin{equation}\label{ch_introduction:dyad}
+    \begin{split}
+        \boldsymbol u \otimes \boldsymbol v &= (u_i \boldsymbol e_i) \otimes (v_j \boldsymbol e_j) \\
+                                            &= (u_1 \boldsymbol e_1 + u_2 \boldsymbol e_2 + u_3 \boldsymbol e_3) \otimes
+                                               (v_1 \boldsymbol e_1 + v_2 \boldsymbol e_2 + v_3 \boldsymbol e_3) \\
+                                            &= u_1 v_1 \boldsymbol e_1 \otimes \boldsymbol e_1
+                                            +  u_1 v_2 \boldsymbol e_1 \otimes \boldsymbol e_2
+                                            +  u_1 v_3 \boldsymbol e_1 \otimes \boldsymbol e_3 \\
+                                            &+ u_2 v_1 \boldsymbol e_2 \otimes \boldsymbol e_1
+                                            +  u_2 v_2 \boldsymbol e_2 \otimes \boldsymbol e_2
+                                            +  u_2 v_3 \boldsymbol e_2 \otimes \boldsymbol e_3 \\
+                                            &+ u_3 v_1 \boldsymbol e_3 \otimes \boldsymbol e_1
+                                            +  u_3 v_2 \boldsymbol e_3 \otimes \boldsymbol e_2
+                                            +  u_3 v_3 \boldsymbol e_3 \otimes \boldsymbol e_3 \\
+                                            &= u_i v_j \boldsymbol e_i \otimes \boldsymbol e_j
+    \end{split}
+\end{equation}\par
+从上式结果可以看出，通过Einstein求和公式表示时，式\eqref{dyad}的第一个等式可以跳过中间步骤得到最后的并矢结果，简化运算过程。 \par
+本教程中常用的一阶张量主要有位移$\boldsymbol u$、外荷载$t$等。常用的高阶张量有
+\begin{itemize}
+    \item 应力 $\boldsymbol \sigma = \sigma_{ij} \boldsymbol e_i \otimes \boldsymbol e_j$ 包括9项分量；
+    \item 应变 $\boldsymbol \varepsilon = \varepsilon_{ij} \boldsymbol e_i \otimes \boldsymbol e_j$ 包括9项分量；
+    \item 四阶弹性张量 $\boldsymbol C = C_{ijkl} \boldsymbol e_i \otimes \boldsymbol e_j \otimes \boldsymbol e_k \otimes \boldsymbol e_l$ 包括81项分量。
+\end{itemize}
+
+\subsection{点乘与叉乘}
+基向量的点乘（Dot product）定义为
+\begin{equation}
+    \boldsymbol e_i \cdot \boldsymbol e_j = \delta_{ij}
+\end{equation}
+其中，$\delta_{ij}$称为Kronecker delta 函数
+\begin{equation}
+    \delta_{ij} = \begin{cases}
+        1 & i = j \\ 0 & i \ne j
+    \end{cases}
+\end{equation} \par
+通过基函数点乘的结果可得到两个一阶张量的点乘结果为
+\begin{equation}
+    \begin{split}
+        \boldsymbol u \cdot \boldsymbol v &= (u_i \boldsymbol e_i) \cdot (v_j \boldsymbol e_j) \\
+                                          &= u_i v_j \boldsymbol e_i \cdot \boldsymbol e_j = u_i v_j \delta_{ij} \\
+                                          &= u_i v_i
+    \end{split}
+\end{equation}
+需要注意，根据Einstein求和公式，上式的结果式3项相加。\par
+进一步将一个1阶张量和一个2阶张量点乘有
+\begin{equation}
+    \begin{split}
+        \boldsymbol u \cdot \boldsymbol \sigma &= (u_i \tikzmark{ei}{$\boldsymbol e_i$}) \cdot (\sigma_{jk} \tikzmark{ej}{$\boldsymbol e_j$} \otimes \boldsymbol e_k) \\
+                                                 &= u_i \sigma_{jk} \delta_{ij} \boldsymbol e_k \\
+                                                 &= u_i \sigma_{ik} \boldsymbol e_k
+    \end{split}
+\end{equation}
+\begin{tikzpicture}[overlay, remember picture]
+    \draw[red,<->,ultra thick](ei) to [in=120,out=60] (ej);
+\end{tikzpicture}
+从上式中可以看出，点乘作用在相邻的两个基向量上，将其转化为 Kronecker delta 函数，整体张量阶次减小2阶，即由整体3阶减为1阶。\par
+双点乘（Double dot product）算子是另一类常用的点乘算子，其运算规则与单点乘类似。例如，两个2阶张量$\boldsymbol \varepsilon$、$\boldsymbol \sigma$进行双点乘有
+\begin{equation}
+    \begin{split}
+        \boldsymbol \varepsilon : \boldsymbol \sigma &= (\varepsilon_{ij} \tikzmark{e11}{$\boldsymbol e_i$} \otimes \tikzmark{e12}{$\boldsymbol e_j$}):(\sigma_{kl} \tikzmark{e13}{$\boldsymbol e_k$} \otimes \tikzmark{e14}{$\boldsymbol e_l$}) \\
+                                                     &= \varepsilon_{ij} \sigma_{kl} \delta_{ik} \delta_{jl} \\
+                                                     &= \varepsilon_{ij} \sigma_{ij}
+    \end{split}
+\end{equation}
+\begin{tikzpicture}[overlay, remember picture]
+    \draw[red,<->,ultra thick](e11) to [in=150,out=30] (e13);
+    \draw[red,<->,ultra thick](e12) to [in=210,out=330] (e14);
+\end{tikzpicture}
+可以看出得到的结果中无基向量，而是个标量，总阶次由4阶变为0阶。\par
+当一个4阶张量$\boldsymbol C$和一个2阶张量$\boldsymbol \varepsilon$进行双点乘可得
+\begin{equation}
+    \begin{split}
+        \boldsymbol C : \boldsymbol \varepsilon &= (C_{ijkl} \boldsymbol e_i \otimes \boldsymbol e_j \otimes \tikzmark{e21}{$\boldsymbol e_k$} \otimes \tikzmark{e22}{$\boldsymbol e_l$}) : (\varepsilon_{mn} \tikzmark{e23}{$\boldsymbol e_m$} \otimes \tikzmark{e24}{$\boldsymbol e_n$}) \\
+                                                &= C_{ijkl} \varepsilon_{mn} \delta_{km} \delta_{ln} \boldsymbol e_i \otimes \boldsymbol e_j \\
+                                                &= C_{ijkl} \varepsilon_{kl} \boldsymbol e_i \otimes \boldsymbol e_j
+    \end{split}
+\end{equation}
+\begin{tikzpicture}[overlay, remember picture]
+    \draw[red,<->,ultra thick](e21) to [in=150,out=30] (e23);
+    \draw[red,<->,ultra thick](e22) to [in=210,out=330] (e24);
+\end{tikzpicture}
+双点乘与单点乘类似，作用于相邻的两对基向量，整体张量阶次减小4阶。\par
+两个基向量的叉乘（Cross product）算子可以表示为
+\begin{equation}
+    \boldsymbol e_i \times \boldsymbol e_j = \epsilon_{ijk} \boldsymbol e_k
+\end{equation}
+其中，$\epsilon_{ijk}$ 为枚举函数（Permutation notion）定义为
+\begin{equation}
+    \epsilon_{ijk} = \begin{cases}
+         1 & ijk = 123,\;231,\;312 \\
+        -1 & ijk = 321,\;213,\;132 \\
+         0 & \mathrm{otherwise}
+    \end{cases}
+\end{equation}
+两个1阶张量$\boldsymbol u, \boldsymbol v$进行叉乘有
+\begin{equation}
+    \begin{split}
+        \boldsymbol u \times \boldsymbol v &= u_i v_j \boldsymbol e_i \times \boldsymbol e_j \\
+                                           &= u_i v_j \epsilon_{ijk} \boldsymbol e_k \\
+                                           &= (u_2 v_3 - u_3 v_2) \boldsymbol e_i \\
+                                           &+ (u_3 v_1 - u_1 v_3) \boldsymbol e_j \\
+                                           &+ (u_1 v_2 - u_2 v_1) \boldsymbol e_k
+    \end{split}
+\end{equation} \par
+点乘和叉乘是除加减法外两类最基本的张量运算规则，两则具有一定的几何意义。两个1阶张量的点乘相当于一个张量向另一个张量投影的乘积，两个1阶张量的叉乘相当于这两个张量所组成的平行四边形的面积。
+
+\subsection{张量微分}
+张量的微分作用在张量的分量上，如位移$\boldsymbol u$对$x$的一阶导数可表示为
+\begin{equation}
+    \frac{\partial \boldsymbol u}{\partial x} = \frac{\partial u_i}{\partial x} \boldsymbol e_i = u_{i,1} \boldsymbol e_i
+\end{equation}
+其中，下标“$,1$“代表对$x$求导数。为了表示方便，这里定义微分张量（nabla tensor）为
+\begin{equation}
+    \nabla = \frac{\partial}{\partial x} \boldsymbol e_1 + \frac{\partial}{\partial y} \boldsymbol e_2 + \frac{\partial}{\partial z} \boldsymbol e_3 = \frac{\partial}{\partial x_i} \boldsymbol e_i
+\end{equation}
+运用张量的并矢、点乘和叉乘可以定义张量的梯度（Gradient）、散度（Divergence）、旋度（Curl）:
+\begin{itemize}
+    \item \textbf{梯度（Gradient）}
+        \begin{equation}
+            \nabla \boldsymbol u = u_{i,j} \boldsymbol e_i \otimes \boldsymbol e_j
+        \end{equation}
+    \item \textbf{散度（Divergence）}
+        \begin{equation}
+            \nabla \cdot \boldsymbol u = u_{i,i} = u_{1,1} + u_{2,2} + u_{3,3}
+        \end{equation}
+    \item \textbf{旋度（Curl）}
+        \begin{equation}
+            \nabla \times \boldsymbol u = u_{i,j} \epsilon_{ijk} \boldsymbol e_k
+        \end{equation}
+\end{itemize}
+
+\subsection{2阶张量的谱分解}\label{spectral}
+对于一个2阶张量$\boldsymbol A$采用$3\times3$的方阵表示为
+\begin{equation}
+\boldsymbol A = \begin{bmatrix}
+    A_{11} & A_{12} & A_{13} \\
+    A_{21} & A_{22} & A_{23} \\
+    A_{31} & A_{32} & A_{33}
+\end{bmatrix}
+\end{equation}
+该方阵的特征值可通过下列特征方程求得：
+\begin{equation}
+    \det(\boldsymbol A - \lambda \boldsymbol 1) = - \lambda^3 + I_1 \lambda^2 - I_2 \lambda + I_3 = 0
+\end{equation}
+其中
+\begin{align}
+    \boldsymbol 1 &= \delta_{ij} \boldsymbol e_i \otimes \boldsymbol e_j \\
+    I_1 &= \mathrm{tr} \boldsymbol A = A_{ii} = \lambda^{(1)} + \lambda^{(2)} + \lambda^{(3)}\label{ch_introduction:invarant1} \\
+    \begin{split}\label{ch_introduction:invarant2}
+    I_2 &= \frac{1}{2}(\mathrm{tr}^2 \boldsymbol A - \mathrm{tr}(\boldsymbol A \cdot \boldsymbol A)) \\
+        &= \frac{1}{2}(A_{ii} A_{jj} - A_{ij} A_{ji}) \\
+        &= \lambda^{(1)} \lambda^{(2)} + \lambda^{(2)} \lambda^{(3)} + \lambda^{(1)} \lambda^{(3)}
+    \end{split} \\
+    I_3 &= \det \boldsymbol A = \epsilon_{ijk} A_{1i} A_{2j} A_{3k} = \lambda^{(1)} \lambda^{(2)} \lambda^{(3)}\label{ch_introduction:invarant3}
+\end{align}
+式中$\boldsymbol 1$为2阶单位张量（Second order identity tensor），$I_1, I_2, I_3$分别为张量$\boldsymbol A$的第一、第二和第三不变量，当张量$\boldsymbol A$代表应力或应变时。坐标系进行旋转变换的情况下$I_1, I_2, I_3$保持不变，所以称它们为不变量。其中，$I_1$也称为$\boldsymbol A$的迹（Trace）, $\mathrm{tr}\boldsymbol A = A_{ii}$。$\lambda^{(i)}, i=1,2,3$为$\boldsymbol A$的三个特征值。与之对应的三个特征向量$\boldsymbol n^{(i)}, i=1,2,3$满足
+\begin{equation}
+    (\boldsymbol A - \lambda^{(i)}\boldsymbol 1) \cdot \boldsymbol n^{(i)} = \boldsymbol 0
+\end{equation}\par
+上述过程称为2阶张量的特征分解，也称谱分解（Spectral decomposition）。除了谱分解外，对于2阶对称张量$\boldsymbol A$还可将其分为主方向部分（dilatational/volumetric）$\boldsymbol A^v$和偏方向部分（deviatoric）$\boldsymbol A^d$，采用分量可表示为
+\begin{equation}
+    \begin{split}
+        A_{ij} &= \frac{1}{3} A_{kk} \delta_{ij} + (A_{ij} - \frac{1}{3} A_{kk} \delta_{ij}) \\
+               &= A_{ij}^v + A_{ij}^d
+    \end{split}
+\end{equation}
+式中
+\begin{equation}\label{ch_introduction:decompose}
+    \begin{cases}
+        A_{ij}^v = \frac{1}{3} A_{kk} \delta_{ij} \\
+        A_{ij}^d = A_{ij} - \frac{1}{3} A_{kk} \delta_{ij}
+    \end{cases}
+\end{equation}
+从主方向部分和偏方向部分表达式可以看出，这两部分具有正交性，即
+\begin{equation}
+    \begin{split}
+        \boldsymbol A^v : \boldsymbol A^d &= A_{ij}^v A_{ij}^d \\
+                                          &= \frac{1}{3} A_{kk} \delta_{ij} (A_{ij} - \frac{1}{3} A_{ll} \delta_{ij}) \\
+                                          &= \frac{1}{3} A_{kk} A_{ii}  - \frac{1}{9} A_{ll} \delta_{ii} \\
+                                          &= 0
+    \end{split}
+\end{equation}\par
+为了推导方便，这里可以引入4阶单位对称张量（Symmetirc fourth order identity tensor）$\boldsymbol I$和4阶单位偏张量（Deviatoric fourth order identity tensor）$\boldsymbol I^d$描述偏方向部分，4阶单位对称张量和偏张量具有如下表达式
+\begin{align}
+    \boldsymbol I &= \frac{1}{2}(\delta_{ik} \delta_{jl} + \delta_{il} \delta_{jk}) \boldsymbol e_i \otimes \boldsymbol e_j \otimes \boldsymbol e_k \otimes \boldsymbol e_l \\
+    \begin{split}
+        \boldsymbol I^d &= (\frac{1}{2}(\delta_{ik} \delta_{jl} + \delta_{il} \delta_{jk})-\frac{1}{3}\delta_{ij}\delta_{kl}) \boldsymbol e_i \otimes \boldsymbol e_j \otimes \boldsymbol e_k \otimes \boldsymbol e_l \\
+                        &= \boldsymbol I - \frac{1}{3} \boldsymbol 1 \otimes \boldsymbol 1
+    \end{split}
+\end{align}
+对于2阶对称张量$\boldsymbol A$具有如下关系
+\begin{equation}
+    \boldsymbol A = \boldsymbol I : \boldsymbol A, \quad
+    \boldsymbol A^d = \boldsymbol I^d : \boldsymbol A
+\end{equation}\par
+偏方向部分$\boldsymbol A^d$的三个不变量称为$J_1, J_2, J_3$，这三个不变量也常用在弹塑性应力-应变本构关系中，其表达式根据公式\eqref{ch_introduction:decompose}和\eqref{ch_introduction:invarant1}-\eqref{ch_introduction:invarant3}可得
+\begin{align}
+    J_1 &= A_{ii}^d = A_{ii} - \frac{1}{3} A_{kk} \delta_{ii} = 0 \\
+    \begin{split}
+        J_2 &= \frac{1}{2}(A_{ij}^dA_{ij}^d - A_{ii}^dA_{jj}^d) = \frac{1}{2} A_{ij}^dA_{ij}^d \\
+            &= \frac{1}{6}((\lambda^{(1)}-\lambda^{(2)})^2 + (\lambda^{(1)}-\lambda^{(3)})^2 + (\lambda^{(2)}-\lambda^{(3)})^2)
+    \end{split} \\
+    J_3 &= \epsilon_{ijk} A_{1i}^d A_{2j}^d A_{3k}^d
+\end{align}\par
+相应的应力、应变主方向部分和偏方向部分的张量如下所示
+\begin{itemize}
+    \item \textbf{静水压力}（主应力）：$p = \frac{1}{3}\sigma_{ii}$
+    \item \textbf{偏应力}：$s_{ij} = \sigma_{ij} - \frac{1}{3}\sigma_{kk} \delta_{ij} = \sigma_{ij} - p \delta_{ij}$
+    \item \textbf{平均应变或球应变}（主应变）：$\varepsilon_m = \frac{1}{3}\varepsilon_{ii}$
+    \item \textbf{偏应变}：$e_{ij} = \varepsilon_{ij} - \frac{1}{3}\varepsilon_{kk} \delta_{ij}$
+\end{itemize}

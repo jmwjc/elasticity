@@ -1,0 +1,243 @@
+\chapter{一维塑性}
+本章将介绍一维情况下理想弹塑性、各向同性等向硬化、随动硬化等塑性应力应变关系及其数学描述，并通过一维弹塑性模型介绍Return-mapping 算法。
+
+\section{塑性应变}
+不同与弹性材料，塑性材料在一定的受力作用下将产生不可恢复的变形。此时，总应变$\varepsilon$可分为弹性部分应变$\varepsilon^e$和塑性部分应变$\varepsilon^p$两部分，即
+\begin{equation}
+\varepsilon = \varepsilon^e + \varepsilon^p
+\end{equation}
+应力将由弹性部分应变$\varepsilon^e$提供
+\begin{equation}\label{ch_plastic1d:constitutive}
+\sigma = E\varepsilon^e = E(\varepsilon - \varepsilon^p)
+\end{equation}
+其中，塑性应变$\varepsilon^p$是不可恢复的，其大小只能增加不能减小。在弹性阶段，$\varepsilon^p$保持不变，$\dot \varepsilon^p=0$。而在塑性阶段，$\varepsilon^p$将随着荷载的增加而改变，所以采用本构关系式\eqref{ch_plastic1d:constitutive}描述并不方便。通常情况下，塑性本构关系采用如下增量形式表示
+\begin{equation}\label{ch_plastic1d:stress}
+\dot \sigma = E \dot \varepsilon^e =
+\begin{cases}
+    E\dot \varepsilon & \mathrm{elastic \; stage} \\
+    E(\dot \varepsilon - \dot \varepsilon^p) & \mathrm{plastic \; stage}
+\end{cases}
+\end{equation} \par
+如图所示，在线性弹塑性模型当中，在外荷载较小时应力应变还是弹性关系，撤除外荷载后还物体恢复到原来状态。随着外荷载增加，荷载达到屈服应力$\sigma_Y$(Yield stress)时，物体产生不可恢复的应变，撤除外荷载后，应力应变关系服从式\eqref{ch_plastic1d:stress}。进入塑性状态后，$\sigma_Y$保持不变的称为理想弹塑性材料，此时应力保持不变，$\dot \sigma \dot \varepsilon^p=0$。$\sigma_Y$增大称为硬化过程(hardening)，此时应力增量与塑性应变增量同时增大或减小，$\dot \sigma \dot \varepsilon^p>0$。$\sigma_Y$减小称为软化过程(softening)，此时应力增量随塑性应变的增大而减小或减小而增大，$\dot \sigma \dot \varepsilon^p<0$。屈服应力函数$\sigma_Y$所组成的平面称为屈服面(Yield surface)，该平面所构成的方程为屈服函数(Yield function)$f(\sigma)$。应力$\sigma$只能存在于屈服面内，即屈服函数需始终保持小于等于零
+\begin{equation}
+f(\sigma) \le 0
+\end{equation}
+当$f<0$时，材料处于弹性阶段；当$f=0$时，材料处于塑性状态。上式称为屈服条件(Yield condition)。为了保持屈服条件始终成立，塑性应变将增大，塑性应变的增大过程满足的关系式称为流动法则(Flow rule)。最常见的流动法则称为Associative flow rule，该流动法则满足
+\begin{equation}
+\dot \varepsilon^p = \dot \gamma \frac{\partial f}{\partial \sigma}
+\end{equation}
+其中，$\dot \gamma$为塑性应变增量的大小，该塑性应变增量大小待定。$\frac{\partial f}{\partial \sigma}$ 为塑性应变增大的方向。\par
+当物体处于加载阶段时，应力应变满足下面规律
+\begin{equation}
+    \left \{
+        \begin{array}{lll}
+            \varepsilon > 0, & \dot \varepsilon > 0, & \sigma > 0 \\ 
+            \varepsilon < 0, & \dot \varepsilon < 0, & \sigma < 0 
+        \end{array}
+    \right .
+    \Rightarrow
+    \sigma \dot \varepsilon > 0
+\end{equation}
+当$f(\sigma)<0$时，
+\begin{equation}
+\dot \gamma = 0, \quad \dot f > 0
+\end{equation}
+当$f(\sigma)=0$时，
+\begin{equation}
+\dot \gamma > 0, \quad \dot f = 0
+\end{equation} \par
+当物体处于卸载阶段时，
+\begin{equation}
+    \left \{
+        \begin{array}{lll}
+            \varepsilon > 0, & \dot \varepsilon < 0, & \sigma > 0 \\ 
+            \varepsilon < 0, & \dot \varepsilon > 0, & \sigma < 0 
+        \end{array}
+    \right .
+    \Rightarrow
+    \sigma \dot \varepsilon < 0
+\end{equation}
+当$f(\sigma)<0$时，
+\begin{equation}
+\dot \gamma = 0, \quad \dot f < 0
+\end{equation}
+当$f(\sigma)=0$时，
+\begin{equation}
+\dot \gamma = 0, \quad \dot f < 0
+\end{equation} \par
+综合上述加载卸载过程，可得塑性应变增量和屈服函数应满足Karush-Kuhn-Tucker (KKT) 准则和一致性条件(Consistency condition)
+\begin{itemize}
+    \item Karush-Kuhn-Tucker 准则
+\begin{equation}
+\dot \gamma \ge 0,\quad f \le 0, \quad \dot \gamma f = 0
+\end{equation}
+    \item 一致性条件
+\begin{equation}
+\dot \gamma \dot f = 0
+\end{equation}
+\end{itemize}\par
+这两个条件是数值模拟过程中，弹塑性过程具有收敛解的必要条件。后续章节中介绍的Return-mapping算法也是根据KKT准则建立的。同时，塑性应变增量大小$\dot \gamma$也可以根据一致性条件确定。接下来将介绍理想弹塑性和线性硬化过程时，如何确定塑性应变增量。
+
+\subsection{理想弹塑性模型}
+在理想弹塑性模型中，屈服应力保持不变，应力始终不超过屈服应力所组成的区间范围。此时屈服函数和屈服条件为
+\begin{equation}
+-\sigma_Y \le \sigma \le \sigma_Y \Rightarrow f(\sigma) = \vert \sigma \vert - \sigma_Y \le 0, \quad \sigma_Y > 0
+\end{equation}
+在此屈服函数下，塑性应变增量方向为
+\begin{equation}
+    \frac{\partial f}{\partial \sigma} = \mathrm{sign}(\sigma)
+\end{equation}
+其中
+\begin{equation}
+    \mathrm{sign}(\sigma) =
+    \begin{cases}
+        1 & \sigma > 0 \\
+        0 & \sigma = 0 \\
+        -1 & \sigma < 0
+    \end{cases}
+\end{equation}\par
+当材料进入塑性阶段时，塑性应变增量大小$\dot \gamma$大于零。此时根据一致性条件，$\dot f$必须等于零，由此可推出塑性应变增量大小为
+\begin{equation}
+    \begin{split}
+        \dot f &= \frac{\partial f}{\partial \sigma} \dot \sigma \\
+               &= \mathrm{sign}(\sigma) E (\dot \varepsilon - \dot \varepsilon^p) \\
+               &= \mathrm{sign}(\sigma) E \dot \varepsilon - E \dot \gamma \\
+               &= 0
+    \end{split} \Rightarrow
+    \dot \gamma = \mathrm{sign}(\sigma) \dot \varepsilon
+\end{equation}
+此时，塑性应变增量为
+\begin{equation}
+\dot \varepsilon^p = \dot \gamma \frac{\partial f}{\partial \sigma} = \dot \varepsilon
+\end{equation}\par
+将此塑性应变增量代入式\eqref{ch_plastic1d:stress}可得理想弹塑性下的本构关系为
+\begin{equation}\label{ch_plastic1d:ideal}
+\dot \sigma =
+\begin{cases}
+    E\dot \varepsilon & \mathrm{elastic \; stage} \\
+    0 & \mathrm{plastic \; stage}
+\end{cases}
+\end{equation}
+该应力应变关系与理想弹塑性情况下的应力应变关系图保持一致。
+
+\subsection{各向同性等向硬化模型}
+等向硬化过程中屈服应力将随着荷载的继续增大而增大，弹性范围也只能增大，即$\dot \sigma_Y\ge0$。描述屈服应力增大的规律也称为\textbf{硬化准则}(hardening rule)，最常见的硬化准则为线性硬化准则。在一维情况下，该准则假设该屈服应力的增量$\dot \sigma_Y$与塑性应变增量大小$\dot \gamma$呈线性关系
+\begin{equation}\label{ch_plastic1d:hardening}
+\dot \sigma_Y = K \dot \gamma
+\end{equation}
+其中，$K>0$为塑性模量。此时，屈服应力可表示为
+\begin{equation}
+\sigma_Y = \sigma_{Y0} + K\alpha
+\end{equation}
+式中，$\alpha$为硬化变量，$\dot \alpha = \dot \gamma$。对于各向同性硬化模型，拉压屈服应力的大小将同时增加或减小，即屈服条件应满足
+\begin{equation}
+f(\sigma,\alpha) = \vert \sigma \vert - (\sigma_{Y0}+K\alpha) \le 0
+\end{equation} \par
+同样地，塑性应变增量大小可通过一致性条件确定
+\begin{equation}
+    \begin{split}
+        \dot f &= \frac{\partial f}{\partial \sigma} \dot \sigma + \frac{\partial f}{\partial \alpha} \dot \alpha \\
+               &= \mathrm{sign}(\sigma) E\dot \varepsilon - E \dot \gamma - K \dot \gamma \\
+               &= 0
+    \end{split} \Rightarrow
+    \dot \gamma = \frac{E}{E+K} \mathrm{sign}(\sigma) \dot \varepsilon
+\end{equation}
+此时，塑性应变增量为
+\begin{equation}
+\dot \varepsilon^p = \dot \gamma \frac{\partial f}{\partial \sigma} = \frac{E}{E+K} \dot \varepsilon
+\end{equation}\par
+将此塑性应变增量代入式\eqref{ch_plastic1d:stress}可得各向同性等向硬化模型下的塑性阶段本构关系为
+\begin{equation}
+\dot \sigma = E(\dot \varepsilon - \dot \varepsilon^p) = \frac{EK}{E+K} \dot \varepsilon = E^T \dot \varepsilon
+\end{equation}
+式中$E^T=\frac{EK}{E+K}$为切向弹塑性模量(Tangent elastoplastic modulus)，由式\eqref{ch_plastic1d:ideal}可知理想弹塑性模型的切向弹塑性模量为零。
+
+\subsection{各向同性随动硬化模型}
+随动硬化过程中弹性范围的中心点位置随着屈服应力的增加而改变，所以屈服条件可假设为
+\begin{equation}
+f(\sigma,q,\alpha) = \vert \sigma - q \vert - (\sigma_{Y0} + K \alpha) \le 0
+\end{equation}
+式中$q$为屈服面中心坐标(back stress)。随动硬化准则将描述屈服面中心坐标如何定义的。最简单的随动硬化模型为Ziegler's rule，该模型假设屈服面中心坐标与塑性应变增量呈线性关系
+\begin{equation}
+    \dot q = H \dot \varepsilon^p = H \dot \gamma \mathrm{sigan}(\sigma-q)
+\end{equation}
+其中$H$为随动硬化模量(Kinematic hardening modulus)。根据一致性条件即可确定随动硬化模型的塑性应变增量为
+\begin{equation}
+    \begin{split}
+        \dot f &= \frac{\partial f}{\partial \sigma} \dot \sigma + \frac{\partial f}{\partial q} \dot q + \frac{\partial f}{\partial \alpha} \dot \alpha \\
+               &= \mathrm{sign}(\sigma-q) E\dot \varepsilon - (E+K+H) \dot \gamma \\
+               &= 0 \\
+        \Rightarrow \dot \gamma &= \frac{E}{E+K+H} \mathrm{sign}(\sigma-q) \dot \varepsilon
+    \end{split}
+\end{equation}
+此时，塑性应变增量为
+\begin{equation}
+\dot \varepsilon^p = \dot \gamma \frac{\partial f}{\partial \sigma} = \frac{E}{E+K+H} \dot \varepsilon
+\end{equation}\par
+将此塑性应变增量代入式\eqref{ch_plastic1d:stress}可得各向同性随动硬化模型下的塑性阶段本构关系和相应的切向弹塑性模量为
+\begin{equation}
+\dot \sigma = E(\dot \varepsilon - \dot \varepsilon^p) = \frac{E(K+H)}{E+K+H} \dot \varepsilon = E^T \dot \varepsilon
+\end{equation}
+
+\subsection{Return-mapping 算法}
+在塑性阶段物理方程不再是线性关系，即使是最简单的理想弹塑性过程，物理方程也是分段线性函数。当使用有限元法进行求解时，离散控制方程不再是线性方程组，而是非线性方程组，需要采用非线性迭代的方法进行求解。对于塑性应力应变关系采用\textbf{Return-mapping 算法}进行迭代求解，迭代求解过程变量对时间的微分将变为有限的增量形式，如应变对时间的导数$\dot \varepsilon$将改为增量形式表示$\Delta \varepsilon$。\par
+Return-mapping算法主要分为两个步骤——预测与矫正，以各向同性等向硬化材料为例，已知第$n$步应力$\sigma_n$、塑性应变$\varepsilon^p_n$、应变增量$\Delta \varepsilon_n$、硬化变量$\alpha_n$。在预测阶段，首先假设第$n+1$步为弹性阶段，采用弹性应力应变关系得到所有尝试的物理量
+\begin{subequations}
+\begin{align}
+    \sigma_{n+1}^{trial} &= \sigma_n + E \Delta \varepsilon_n \\
+    \varepsilon_{n+1}^{ptrial} &= \varepsilon_n^p \\
+    \alpha_{n+1}^{trial} &= \alpha_n \\
+    f_{n+1}^{trial} &= \vert \sigma_{n+1}^{trial} \vert - (\sigma_{Y0}+K\alpha_{n+1}^{trial})
+\end{align}
+\end{subequations}
+当$f_{n+1}^{trial} \le 0$时，物体处于弹性阶段，此时塑性应变保持不变。其余变量按弹性应力应变关系进行更新
+\begin{subequations}
+\begin{align}
+    \sigma_{n+1} &= \sigma_{n+1}^{trial} \\
+    \varepsilon_{n+1}^{p} &= \varepsilon_n^p \\
+    \alpha_{n+1} &= \alpha_n
+\end{align}
+\end{subequations}
+当$f_{n+1}^{trial}>0$时，物体进入塑性阶段，此时塑性应变增量不为零，$\Delta \gamma>0$。其余变量
+此时，塑性应变增量大小为$\Delta \gamma = \varepsilon_{n+1}^p-\varepsilon_n^p=0$，各个变量有
+\begin{subequations}
+        \begin{align}
+            \begin{split}
+            \sigma_{n+1} &= E(\varepsilon_{n+1} - \varepsilon_{n+1}^p) \\
+                         &= E(\varepsilon_{n+1} - \varepsilon_n^p) - E(\varepsilon_{n+1}^p - \varepsilon_n^p) \\
+                         &= \sigma_{n+1}^{trial} - E \Delta \varepsilon^p
+        \end{split} \label{ch_plastic1d:sigman} \\
+            \varepsilon_{n+1}^p &= \varepsilon_n^p + \Delta \varepsilon^p \\ 
+            \alpha_{n+1} &= \alpha_n + \Delta \gamma
+        \end{align}
+\end{subequations}
+其中
+\begin{equation}\label{ch_plastic1d:deltaep}
+    \Delta \varepsilon^p = \Delta \gamma \mathrm{sign}(\sigma_{n+1})
+\end{equation}
+将式\eqref{ch_plastic1d:deltaep}代入式\eqref{ch_plastic1d:sigman}有
+\begin{equation}
+    (\vert \sigma_{n+1} \vert + E\Delta \gamma) \mathrm{sign}(\sigma_{n+1}) = \vert \sigma_{n+1}^{trial} \vert \mathrm{sign}(\sigma_{n+1}^{trial})
+\end{equation}
+由于$E,\Delta \gamma > 0$可得
+\begin{equation}
+    \mathrm{sign}(\sigma_{n+1}) = \mathrm{sign}(\sigma_{n+1}^{trial})
+\end{equation} \par
+由于此时处于塑性状态，应力需在屈服面上，即$f_{n+1}=0$
+\begin{equation}
+    \begin{split}
+        f_{n+1} &= \vert \sigma_{n+1} \vert - (\sigma_{Y_0} + K \alpha_{n+1}) \\
+                &= \underbrace{\vert \sigma_{n+1}^{trial} \vert - (\sigma_{Y0} + K \alpha_n)}_{f^{trial}_{n+1}} - E \Delta \gamma - K \Delta \alpha \\
+                &= f^{trial}_{n+1} - (E+K) \Delta \gamma \\
+                &=0 \\
+        \Rightarrow \Delta \gamma &= \frac{f^{trial}_{n+1}}{E+K} >0
+    \end{split}
+\end{equation}
+求得塑性应变增量大小后即可更新所有变量
+\begin{subequations}
+\begin{align}
+    \sigma_{n+1} &= \sigma_{n+1}^{trial} - \Delta \gamma E \mathrm{sign}(\sigma_{n+1}^{trial}) \\
+    \varepsilon_{n+1}^p &= \varepsilon_n^p + \Delta \gamma \mathrm{sign}(\sigma_{n+1}^{trial}) \\
+    \alpha_{n+1} &= \alpha_n + \Delta \gamma
+\end{align}
+\end{subequations}

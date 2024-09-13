@@ -1,0 +1,131 @@
+\chapter{多维塑性}
+本章将介绍多维情况下与$J_2$相关的屈服准则，$J_2$相关的屈服准则通常可以描述金属类材料的塑性应力应变关系。常用的与$J_2$相关的屈服准则有Tresca准则和Mises准则，并与Mises理想弹塑性屈服准则为例，介绍多维情况下切向弹塑性模量的推导过程。
+\section{Lode坐标系}
+对于各向同性材料，其屈服应力应当与方向无关。即任意一点处的任意一平面上的应力达到屈服应力时，该点处其余平面上的应力也达到屈服应力。所以为了方便描述，屈服函数可采用主应力$\sigma_i$表示
+\begin{equation}
+f(\sigma_1,\sigma_2,\sigma_3) = 0
+\end{equation}
+此时，屈服面可建立与由主应力$\sigma_i$所组成的坐标系中，此坐标系也成为\textbf{主应力空间}。但是采用主应力进行表示时，屈服面函数形式通常较为复杂，而是改为应力的三个不变量$I_1,I_2,I_3$表示
+\begin{equation}
+f(I_1,I_2,I_3) = 0
+\end{equation}\par
+在主应力空间上，将主应力进行谱分解可在主应力空间的基础上建立以不变量$I_i$为基础的坐标系。在主应力空间中的一点$\boldsymbol \sigma=\{\sigma_1,\sigma_2,\sigma_3\}$可采用相应的基向量$\boldsymbol e_i$和主应力表示为
+\begin{equation}\label{ch_J2:sigma}
+\boldsymbol \sigma = \sigma_1 \boldsymbol e_1 + \sigma_2 \boldsymbol e_2 + \sigma_3 \boldsymbol e_3
+\end{equation}
+对主应力引入谱分解，主应力分解为静水压力和主偏应力表示
+\begin{equation}\label{ch_J2:decompose}
+\sigma_i = p + s_i, \quad p = \frac{1}{3}(\sigma_1+\sigma_2+\sigma_3), \quad s_i = \sigma_i - p
+\end{equation}
+将式\eqref{ch_J2:decompose}代入式\eqref{ch_J2:sigma}，主应力空间中的应力向量可分解为
+\begin{equation}
+    \begin{split}
+        \boldsymbol \sigma &= \sum_{i=1}^3 \sigma_i \boldsymbol e_i = \sum_{i=1}^3 (p + s_i) \boldsymbol e_i \\
+                           &= p \sum_{i=1}^3 \boldsymbol e_i + \sum_{i=1}^3 s_i \boldsymbol e_i = \frac{I_1}{\sqrt{3}} \boldsymbol e_z + \sum_{i=1}^3 s_i \boldsymbol e_i
+    \end{split}
+\end{equation}
+其中，$\boldsymbol e_z = \frac{\sum_{i=1}^3\boldsymbol e_i}{\sqrt 3}$的方向为静水压力轴线方向，该向量模为$\sqrt{3}$。过坐标系原点做垂直于静水压力轴的平面称为$\pi$平面，由上式可知，所有$\sum_{i=3}^3 s_i \boldsymbol e_i$均平行于$\pi$平面，并且根据式\eqref{ch_stress:J22}，该向量的模为
+\begin{equation}
+    \sqrt{\sum_{i=1}^3 s_i^2} = \sqrt{2J_2},\quad \sum_{i=1}^3 s_i \boldsymbol e_i = \sqrt{2J_2} \boldsymbol e_r
+\end{equation}
+以$\frac{I_1}{\sqrt 3}$为$z$轴，$\sqrt{2J_2}$为半径$r$轴，如果在$\pi$平面上选取一合适的夹角$\theta$，即可组成圆柱坐标系表示主应力空间中的应力状态。\par
+令主应力空间基向量$\boldsymbol e_i$在$\pi$平面上的投影为$\boldsymbol e'_i$，$\boldsymbol e_i = \sqrt{\frac{2}{3}} \boldsymbol e'_i$。在$\pi$平面上，以主应力空间坐标原点为原点，$\boldsymbol e'_2$为$y$轴，重新建立一直角坐标系$xOy$。假设一点应力状态在$\pi$平面上的投影为$\sqrt{2J_2}\boldsymbol e_r$，此时可选取$\boldsymbol e_r$与$x$轴的夹角$\theta_\sigma$为圆柱坐标系的夹角变量，称为\textbf{Lode角}。直角坐标系$(x,y)$与极坐标系$(\sqrt{2J_2},\theta_\sigma)$具有如下关系
+\begin{subequations}\label{ch_J2:xy}
+\begin{align}
+    x &= \frac{1}{\sqrt 2}(s_1-s_3) = \frac{1}{\sqrt 2}(\sigma_1-\sigma_3) = \sqrt{2J_2}\cos \theta_\sigma \\
+    y &= \frac{1}{\sqrt 6}(2s_2-s_1-s_3) = \frac{1}{\sqrt 6}(2\sigma_2-\sigma_1-\sigma_3) = \sqrt{2J_2} \sin \theta_\sigma
+\end{align}
+\end{subequations}
+根据上述关系可得Lode角为
+\begin{equation}
+    \theta_\sigma = \arctan \frac{y}{x} = \frac{1}{\sqrt 3} \mu_\sigma
+\end{equation}
+其中
+\begin{equation}
+\mu_\sigma = \frac{2s_2-s_1-s_3}{s_1-s_3} = \frac{3s_2}{s_1-s_3} = \frac{2\sigma_2-\sigma_1-\sigma_3}{\sigma_1-\sigma_3}
+\end{equation}
+式中，$\mu_\sigma$为\textbf{Lode参数}，当处于单轴拉伸时$\mu_\sigma=-1$；当处于纯剪状态时$\mu_\sigma=0$；当处于单轴压缩时$\mu_\sigma=1$。由于$\sigma_1\ge\sigma_2\ge\sigma_3$，有
+\begin{equation}
+-1 \le \mu_\sigma \le 1, \quad - \frac{\pi}{6} \le \theta_\sigma \le \frac{\pi}{6}
+\end{equation}\par
+Lode角也可通过下式由$J_2$和$J_3$确定
+\begin{equation}
+\cos3\theta_\sigma = \frac{3\sqrt 3 J_3}{2 J_2^{\frac{3}{2}}}
+\end{equation}\par
+根据几何关系，主应力$\sigma_i$和主偏应力$s_i$可采用$I_1$、$J_2$和$\theta_\sigma$表示为
+\begin{equation}
+    \begin{split}
+        \sigma_1 &= p+s_1 = \frac{I_1}{3} + \frac{2\sqrt{J_2}}{\sqrt 3}\sin(\theta_\sigma + \frac{2\pi}{3}) \\
+        \sigma_2 &= p+s_2 = \frac{I_1}{3} + \frac{2\sqrt{J_2}}{\sqrt 3}\sin \theta_\sigma \\
+        \sigma_3 &= p+s_3 = \frac{I_1}{3} + \frac{2\sqrt{J_2}}{\sqrt 3}\sin(\theta_\sigma - \frac{2\pi}{3})
+    \end{split}
+\end{equation} \par
+圆柱坐标系$(I_1,J_2,\theta_\sigma)$称为\textbf{Lode坐标系}或\textbf{Haigh–Westergaard坐标系}，通过该坐标系屈服条件就可表示为
+\begin{equation}
+    f(I_1,J_2,\theta_\sigma) = 0 \; \mathrm{or} \; f(I_1,J_2,J_3) = 0
+\end{equation}
+\section{$J_2$模型}
+\subsection{Tresca准则}
+在Tresca准则中假设当剪应力达到最大时，材料发生屈服。此时屈服准则可以表示为
+\begin{equation}
+    f(\boldsymbol \sigma) = \sigma_1-\sigma_3 - \sqrt{\frac{3}{2}}K
+\end{equation}
+式中$K$为屈服相关的材料系数，$\sigma_1$、$\sigma_3$分别为最大和最小主应力。当主应力$\sigma_i$不区分大小时，屈服函数也可改写为
+\begin{equation}
+    f(\boldsymbol \sigma) = \max(\vert \sigma_1 - \sigma_2 \vert, \vert \sigma_2 - \sigma_3 \vert, \vert \sigma_3 - \sigma_1 \vert) - \sqrt{\frac{3}{2}}K
+\end{equation} \par
+从Tresca准则的屈服面方程中可以看出，该准则与静水压力无关(式中不存在$I_1=\sigma_1+\sigma_2+\sigma_3$)，屈服面始终垂直于$\pi$平面。将式\eqref{ch_J2:xy}引入将主应力采用$\pi$平面上的$x,y$坐标表示可得屈服面方程在$\pi$平面上投影的形状
+\begin{subequations}
+    \begin{align}
+        \vert \sigma_1 - \sigma_2 \vert &= \Big \vert \frac{\sqrt 2}{2}x - \frac{\sqrt 6}{2}y \Big \vert \le \sqrt{\frac{3}{2}}K \Rightarrow \Big \vert \frac{\sqrt 3}{3} x - y \big \vert \le K \\
+        \vert \sigma_2 - \sigma_3 \vert &= \Big \vert \frac{\sqrt 2}{2}x + \frac{\sqrt 6}{2}y \Big \vert \le \sqrt{\frac{3}{2}}K \Rightarrow \Big \vert \frac{\sqrt 3}{3} x + y \big \vert \le K \\
+        \vert \sigma_3 - \sigma_1 \vert &= \vert \sqrt 2x \vert \le \sqrt{\frac{3}{2}}K \Rightarrow \vert x \vert \le \frac{\sqrt 3}{2}K 
+    \end{align}
+\end{subequations}
+从上式可知，在$\pi$平面上Tresca屈服面为正六边形。由于Tresca屈服面并不连续，当采用Associative流动法则时，塑性应变方向为$\frac{\partial f}{\partial \boldsymbol \sigma}$。但不连续的Tresca屈服面在不连续处导数并不存在，使用起来不方便。\par
+除了采用主应力表示Tresca准则屈服面方程外，还可以使用$J_2$和Lode角$\theta_\sigma$表示
+\begin{equation}
+    f(J_2,\theta_\sigma)=2\sqrt{J_2}\cos \theta_\sigma - K \le 0
+\end{equation}
+
+\subsection{Mises屈服准则}
+Mises屈服准则要求偏应力的大小不能超过相对应的屈服应力，其屈服准则可表示为
+\begin{equation}
+    f(\boldsymbol \sigma) = \sqrt{2J_2} - K \le 0
+\end{equation}
+其中，$\sqrt{2J_2}$为偏应力的大小，根据$J_2$的表达式可改写为主应力$\sigma_i$或$\pi$平面直角坐标系$x,y$表示
+\begin{equation}
+    \sqrt{2J_2} = \sqrt{\frac{1}{3}((\sigma_1-\sigma_2)^2 + (\sigma_2-\sigma_3)^2 + (\sigma_3-\sigma_1)^2)} = \sqrt{x^2+y^2}
+\end{equation}\par
+相较于Tresca准则，Mises准则具有光滑的屈服面，当材料为Associative材料时，其塑性应变可假设为
+\begin{equation}
+    \dot{\boldsymbol \varepsilon}^p = \dot \gamma \frac{\partial f}{\partial \boldsymbol \sigma}
+\end{equation}
+式中$\dot \gamma$为塑性应变增量的大小，$\frac{\partial f}{\partial \boldsymbol \sigma}$为塑性应变增量的方向，其表达式为
+\begin{equation}
+    \begin{split}
+        \frac{\partial f}{\partial \boldsymbol \sigma} &= \frac{\partial f}{\partial J_2} \frac{\partial J_2}{\partial \boldsymbol \sigma} \\
+                                                       &= \frac{1}{\sqrt{2J_2}} \frac{\partial (\frac{1}{2} \boldsymbol s: \boldsymbol s)}{\partial \boldsymbol \sigma} = \frac{1}{\sqrt{2J_2}} \boldsymbol s: \frac{\partial \boldsymbol s}{\partial \boldsymbol \sigma} \\ 
+                                                       &= \frac{\boldsymbol s}{\Vert \boldsymbol s \Vert} = \boldsymbol n_s
+    \end{split}
+\end{equation}
+式中$\boldsymbol n_s$为偏应力$\boldsymbol s$的方向。\par
+当材料进入塑性阶段时，根据一致性条件有
+\begin{equation}
+    \begin{split}
+        \dot f &= \frac{\partial f}{\partial \boldsymbol \sigma} : \dot{\boldsymbol \sigma} = \boldsymbol n_s : \boldsymbol C : (\dot{\boldsymbol \varepsilon}-\dot{\boldsymbol \varepsilon}^p) \\
+               &= \boldsymbol n_s : \boldsymbol C : (\dot{\boldsymbol \varepsilon}-\dot \gamma \boldsymbol n_s) \\
+               &=0
+    \end{split} \Rightarrow
+    \dot \gamma = \frac{\boldsymbol n_s : \boldsymbol C : \dot{\boldsymbol \varepsilon}}{\boldsymbol n_s : \boldsymbol C : \boldsymbol n_s}
+\end{equation}
+此时本构关系为
+\begin{equation}
+    \begin{split}
+        \dot{\boldsymbol \sigma} &= \boldsymbol C : (\dot{\boldsymbol \varepsilon} - \dot{\boldsymbol \varepsilon}^p) \\
+                                 &= \boldsymbol C : (\dot{\boldsymbol \varepsilon} - \frac{\boldsymbol n_s : \boldsymbol C : \dot{\boldsymbol \varepsilon}}{\boldsymbol n_s : \boldsymbol C : \boldsymbol n_s} \boldsymbol n_s) \\
+                                 &= (\boldsymbol C - \boldsymbol n_s \otimes \boldsymbol n_s : \boldsymbol C) : \dot{\boldsymbol \varepsilon} \\
+                                 &= \boldsymbol C^T : \dot{\boldsymbol \varepsilon}
+    \end{split}
+\end{equation}
+其中，$\boldsymbol C^T$为四阶切向弹塑性张量。与一维情况不同，二维情况下的切向弹塑性张量并不为零。

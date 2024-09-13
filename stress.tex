@@ -1,0 +1,240 @@
+\chapter{应力}
+本章将介绍多维情况下应力是如何定义，并以二维情况为例，推导与应力相关的平衡微分方程和应力边界条件表达式。同时，引出空间中一点应力状态的一些特性，如应力的不变量、莫尔圆等。
+\section{平衡微分方程}
+力根据其作用范围可分为体力和面力，体力作用于物体内部，其大小代表单位体积所受到力的大小。面力则作用在物体表面，其大小代表单位面积所受力的大小。根据第\ref{introduction}章介绍可知，应力是一种面力。在多维情况下，应力可由二阶张量进行表示，如图所示二维情况微元体，张量的第一个下标代表应力所在平面的法向，而第二个下标则表示这个应力的投影方向。即$\sigma_{ij}$代表法向为$i$方向的平面上$j$方向力的大小，也可以视为应力张量$\boldsymbol \sigma$在法向为$i$的平面上$j$方向的投影，即
+\begin{equation}
+\sigma_{ij} = \boldsymbol e_i \cdot \boldsymbol \sigma \cdot \boldsymbol e_j
+\end{equation}\par
+在边长为$\Delta x$和$\Delta y$的方形微元体中，根据$x$、$y$方向的平衡条件有
+\begin{subequations}\label{ch_stress:xyeq}
+\begin{multline}
+    (\sigma_{11}(x+\Delta x,y) - \sigma_{11}(x,y))\Delta y + \\ (\sigma_{21}(x,y+\Delta y)-\sigma_{21}(x,y))\Delta x + b_1 \Delta x \Delta y = 0
+\end{multline}
+\begin{multline}
+    (\sigma_{12}(x+\Delta x,y) - \sigma_{12}(x,y))\Delta y + \\ (\sigma_{22}(x,y+\Delta y)-\sigma_{22}(x,y))\Delta x + b_2 \Delta x \Delta y = 0
+\end{multline}
+\end{subequations}
+等式两端同除$\Delta x \Delta y$并根据极限定义可得
+\begin{equation}
+\begin{cases}
+\sigma_{11,1} + \sigma_{21,2} + b_1 = 0 \\
+\sigma_{12,1} + \sigma_{22,2} + b_2 = 0 
+\end{cases}
+\end{equation}
+上式二维形式下的平衡微分方程。引入Einstein求和公式和张量可进一步将平衡微分方程简写为一个式子，式子可分别采用分量和张量表示
+\begin{subequations}\label{ch_stress:eqtensor}
+    \begin{align}
+        \sigma_{ij,i} + b_j &= 0 \\
+        \quad \nabla \cdot \boldsymbol \sigma + \boldsymbol b &= \boldsymbol 0
+    \end{align}
+\end{subequations}\par
+值得注意的是，不同于公式\eqref{ch_stress:xyeq}，采用张量的平衡微分方程\eqref{ch_stress:eqtensor}不止适用于$x,y$正交的直角坐标系，在曲体坐标系等非直角坐标系下依然成立，张量表示的方程更具有鲁棒性。\par
+在二维情况下，微元体除了有$x$、$y$方向的静力平衡条件外，还有需满足力矩平衡。如图所示对矩形微元体形心$O$点取矩得
+\begin{multline}
+    (\sigma_{12}(x+\Delta x,y) + \sigma_{12}(x,y))\Delta y \frac{\Delta x}{2} \\
+  - (\sigma_{21}(x,y+\Delta y) + \sigma_{21}(x,y))\Delta x \frac{\Delta y}{2} = 0
+\end{multline}
+其中，由于体力$\boldsymbol b$的合力过形心点$O$，故忽略体力影响。当$\Delta x, \Delta y \rightarrow 0$时，有
+\begin{equation}
+\sigma_{12} = \sigma_{21}
+\end{equation}
+结合$\sigma_{11}=\sigma_{11}$、$\sigma_{22} = \sigma_{22}$，可将上式统一写成如下分量表达式
+\begin{equation}\label{ch_stress:sheareq}
+\sigma_{ij} = \sigma_{ji}
+\end{equation}
+该关系式称为\textbf{剪力互等定理}。
+
+\section{应力边界条件}
+对于应力边界条件，如图所示取一包含边界处的微元体进行分析。该微元体为三角形，斜边$\Delta s$为物体外边界，而直角边$\Delta x$、$\Delta y$为内边界。其中，外边界的法向为$\boldsymbol n$，其分量$n_i$根据几何关系有
+\begin{equation}\label{ch_stress:n1n2}
+n_1 = \cos \alpha = \frac{\Delta y}{\Delta s}, \quad n_2 = \sin \alpha = \frac{\Delta x}{\Delta s}
+\end{equation}
+根据$x$、$y$方向静力平衡条件有
+\begin{subequations}\label{ch_stress:eqbct}
+    \begin{align}
+        t_1 \Delta s - \sigma_{11} \Delta x - \sigma_{21} \Delta y + b_1 \frac{\Delta x \Delta y}{2} &= 0 \\
+        t_2 \Delta s - \sigma_{12} \Delta x - \sigma_{22} \Delta y + b_2 \frac{\Delta x \Delta y}{2} &= 0
+    \end{align}
+\end{subequations}
+将上式等式两边同除$\Delta s$，并根据几何关系式\eqref{ch_stress:n1n2}可得
+\begin{subequations}\label{ch_stress:eqbct2}
+    \begin{align}
+        t_1 - \sigma_{11} n_1 - \sigma_{21} n_2 + b_1 n_1 \frac{\Delta y}{2} &= 0 \\
+        t_2 - \sigma_{12} n_1 - \sigma_{22} n_2 + b_2 n_2 \frac{\Delta x}{2} &= 0
+    \end{align}
+\end{subequations}
+当$\Delta x, \Delta y \rightarrow 0$时
+\begin{subequations}
+    \begin{align}
+        t_1 &= \sigma_{11} n_1 + \sigma_{21} n_2 \\
+        t_2 &= \sigma_{12} n_1 + \sigma_{22} n_2
+    \end{align}
+\end{subequations}
+上式即为二维情况下的应力边界条件表达式。与平衡微分方程类似，并引入剪力互等定理式\eqref{ch_stress:sheareq}，上式可采用分量或张量化简为一个式子
+\begin{subequations}
+    \begin{align}
+        t_j = \sigma_{ij} n_i \quad &\mathrm{or} \quad t_i = \sigma_{ij} n_j \\
+        \boldsymbol t = \boldsymbol n \cdot \boldsymbol \sigma \quad &\mathrm{or} \quad \boldsymbol t = \boldsymbol \sigma \cdot \boldsymbol n
+    \end{align}
+\end{subequations}\par
+应力边界条件也可以看作是应力朝法向$\boldsymbol n$的投影等于外荷载。通常来讲，一个张量与一个单位向量的点乘，可视为这个张量朝这个方向的投影。
+
+\section{一点的应力状态}
+一点处的应力随着切面不同（基向量不同），其分量的大小也不同。在二维情况下，对于任意的一个法向为$\boldsymbol n$的平面，其法向方向的应力分量$\sigma_{nn}$称为正应力，其切向方向的应力分量$\sigma_{ns}$称为切应力，正应力和切应力可表示为
+\begin{equation}\label{ch_stress:snn}
+    \begin{split}
+        \sigma_{nn} &= \boldsymbol n \cdot \boldsymbol \sigma \cdot \boldsymbol n \\
+                    &= n_i \sigma_{ij} n_j \\
+                    &= \sigma_{11} n_1^2 + \sigma_{22} n_2^2 + 2\sigma_{12} n_1 n_2 \\
+                    &= \sigma_{11} \cos^2 \alpha + \sigma_{22} \sin^2 \alpha + 2\sigma_{12} \sin \alpha \cos \alpha \\
+                    &= \frac{1}{2} (\sigma_{11} + \sigma_{22}) + \frac{1}{2}(\sigma_{11} - \sigma_{22}) \cos 2\alpha + \sigma_{12} \sin 2\alpha
+    \end{split}
+\end{equation}
+\begin{equation}\label{ch_stress:sns}
+    \begin{split}
+        \sigma_{ns} &= \boldsymbol n \cdot \boldsymbol \sigma \cdot \boldsymbol s \\
+                    &= n_i \sigma_{ij} s_j \\
+                    &= (\sigma_{22} - \sigma_{11})\sin \alpha \cos \alpha + \sigma_{12} (\cos^2 \alpha - \sin^2 \alpha) \\
+                    &= \frac{1}{2}(\sigma_{22} - \sigma_{11})\sin 2\alpha + \sigma_{12} \cos 2\alpha
+    \end{split}
+\end{equation}
+其中，$\boldsymbol s$为切向单位张量，其分量与法向分量具有如下关系
+\begin{equation}
+    s_1 = -n_2, \quad s_2 = n_1
+\end{equation} \par
+从式\eqref{ch_stress:snn}和式\eqref{ch_stress:sns}中可以看出，正应力和切应力会随着投影平面的改变而改变，并且两者的大小是相关的。角度$\alpha$可视为投影平面和直接坐标系的夹角，当$\alpha$确定时，应力$\boldsymbol \sigma$关于这个投影平面的正应力和切应力也随之确定。同时，当选取合适的角度$\alpha$时，可使切应力为零，令$\alpha^{(i)}$为切应力为零时的角度，根据切应力表达式\eqref{ch_stress:sns}可知该表达式为
+\begin{equation}\label{ch_stress:tan}
+\tan 2 \alpha^{(i)} = \frac{2\sigma_{12}}{\sigma_{11} - \sigma_{22}}
+\end{equation}
+\begin{equation}\label{ch_stress:sincos}
+    \begin{cases}
+    \sin 2 \alpha^{(k)} = \frac{\sigma}{\sqrt{\frac{1}{4}(\sigma_{11}-\sigma_{22})^2 + \sigma_{12}^2}}\\
+    \cos 2 \alpha^{(k)} = \frac{\frac{1}{2}(\sigma_{11}-\sigma_{22})}{\sqrt{\frac{1}{4}(\sigma_{11}-\sigma_{22})^2 + \sigma_{12}^2}}
+    \end{cases}
+\end{equation} \par
+当切应力为零时，正应力称为\textbf{主应力}（Principal stress），将式\eqref{ch_stress:sincos}代入式\eqref{ch_stress:snn}可得主应力表达式为
+\begin{equation}
+    \sigma_1, \sigma_2 = \frac{1}{2}(\sigma_{11}+\sigma_{22})\pm \sqrt{\frac{1}{4}(\sigma_{11}-\sigma_{22})^2 + \sigma_{12}^2},\quad \sigma_{1}\ge\sigma_{2}
+\end{equation}
+其中，$\sigma_i$为主应力，与之对应的主方向为
+\begin{equation}
+    \boldsymbol n^{(i)} = \{ \cos \alpha^{(i)}, \sin \alpha^{(i)} \}^T
+\end{equation}\par
+由于$\tan$函数的周期为$180^{\circ}$，式\eqref{ch_stress:tan}为一固定值时，$\alpha^{(i)}$具有两个值，分别为$\alpha^{(1)}$和$\alpha^{(2)}$。且$\alpha^{(1)}$和$\alpha^{(2)}$相差$90^{\circ}$，即$\boldsymbol n^{(1)}$垂直于$\boldsymbol n^{(2)}$，$\boldsymbol n^{(1)}\cdot \boldsymbol n^{(2)}=0$。此时，$\boldsymbol n^{(1)}$和$\boldsymbol n^{(2)}$可作为基向量与主应力$\sigma_i$一起用于表示应力张量$\boldsymbol \sigma$为
+\begin{equation}
+\boldsymbol \sigma = \sigma_1 \boldsymbol n^{(1)} \otimes \boldsymbol n^{(1)} + \sigma_2 \boldsymbol n^{(2)} \otimes \boldsymbol n^{(2)}
+\end{equation}
+通过对上式等号两端同乘$\boldsymbol n^{(k)}$可以证明主应力$\sigma_k$和主方向$\boldsymbol n^{(k)}$为应力张量$\boldsymbol \sigma$的特征值和特征向量
+\begin{subequations}
+\begin{align}
+    \text{no sum } k \quad & \boldsymbol \sigma \cdot \boldsymbol n^{(k)} = \sigma_k \boldsymbol n^{(k)} \\
+    \Rightarrow & \sigma_{ij} n_j^{(k)} = \sigma_k n_i^{(k)} \\
+    \Rightarrow & (\sigma_{ij}-\delta_{ij}\sigma_k) n_j^{(k)} = 0 \label{ch_stress:eig}
+\end{align}
+\end{subequations}
+进一步将式\eqref{ch_stress:eig}写成矩阵形式有
+\begin{equation}
+\begin{bmatrix}
+    \sigma_{11} - \sigma_k & \sigma_{12} \\ \sigma_{21} & \sigma_{22} - \sigma_k
+\end{bmatrix}
+\begin{Bmatrix}
+n_1^{(k)} \\ n_2^{(k)}
+\end{Bmatrix} = \boldsymbol 0
+\end{equation}
+上式即为矩阵特征值的求解方程。\par
+在二维情况下的应力张量具有2个主应力和2个主方向，而三维情况下则具有3个主应力和3个主方向。三维情况下的主应力和主方向也为应力的特征值和特征向量
+\begin{equation}\label{ch_stress:det}
+\begin{bmatrix}
+    \sigma_{11}-\sigma_k & \sigma_{12} & \sigma_{13} \\
+    \sigma_{21} & \sigma_{22}-\sigma_k & \sigma_{23} \\
+    \sigma_{31} & \sigma_{32} & \sigma_{33}-\sigma_k
+\end{bmatrix}
+\begin{Bmatrix}
+n^{(k)}_1 \\ n^{(k)}_2 \\ n^{(k)}_3
+\end{Bmatrix} = 0
+\end{equation}
+相应的谱分解格式为
+\begin{equation}
+\boldsymbol \sigma = \sigma_1 \boldsymbol n^{(1)} \otimes \boldsymbol n^{(1)} + \sigma_2 \boldsymbol n^{(2)} \otimes \boldsymbol n^{(2)} + \sigma_3 \boldsymbol n^{(3)} \otimes \boldsymbol n^{(3)}
+\end{equation}\par
+式\eqref{ch_stress:det}矩阵的行列式如下所示，根据该行列式可求得主应力的大小。
+\begin{equation}
+    \sigma_k^{3} - I_1 \sigma_k^2 + I_2 \sigma_k - I_3 = 0
+\end{equation}
+式中$I_1$、$I_2$、$I_3$为第一、二、三主应力不变量
+\begin{subequations}
+\begin{align}
+    I_1 &= \mathrm{tr} \boldsymbol \sigma = \sigma_{ii} = \sigma_{11} + \sigma_{22} + \sigma_{33} \\
+    \begin{split}
+    I_2 &= \frac{1}{2}(\mathrm{tr}^2(\boldsymbol \sigma)-\mathrm{tr}(\boldsymbol \sigma \cdot \boldsymbol \sigma)) = \frac{1}{2}(\sigma_{ii}\sigma_{jj} - \sigma_{ij}\sigma_{ij}) \\
+        &= \sigma_{11}\sigma_{22} + \sigma_{22}\sigma_{33} + \sigma_{33}\sigma_{11} - \sigma_{12}^2 - \sigma_{13}^2 - \sigma_{23}^2
+    \end{split} \\
+    I_3 &= \det \boldsymbol \sigma = \epsilon_{ijk}\sigma_{1i}\sigma_{2j}\sigma_{3k}
+\end{align}
+\end{subequations}
+当$\boldsymbol \sigma$为主方向时，应力的三个不变量也可以由主应力确定
+\begin{subequations}
+\begin{align}
+    I_1 &= \sigma_{1} + \sigma_{2} + \sigma_{3} \\
+    I_2 &= \sigma_{1}\sigma_{2} + \sigma_{2}\sigma_{3} + \sigma_{3}\sigma_{1} \label{ch_stress:I2} \\
+    I_2 &= \sigma_{1}\sigma_{2}\sigma_{3}
+\end{align}
+\end{subequations} \par
+根据节\ref{spectral}中的谱分解过程，可以将应力张量$\boldsymbol \sigma$分解为静水压部分和偏应力部分
+\begin{equation}\label{ch_stress:decompose}
+\boldsymbol \sigma = p \boldsymbol 1 + \boldsymbol s
+\end{equation}
+式中$p$为静水压力，$\boldsymbol s$为偏应力，静水压力和偏应力分量表达式为
+\begin{equation}\label{ch_stress:ps}
+p = \frac{1}{3} \sigma_{ii}, \quad s_{ij} = \sigma_{ij} - p \delta_{ij}
+\end{equation}
+根据上式可得，主应力可采用静水压力和偏应力进行表示
+\begin{equation}
+\sigma_i = p + s_i
+\end{equation}
+式中$s_i,i=1,2,3$为偏应力张量$\boldsymbol s$的主偏应力。\par
+偏应力张量$\boldsymbol s$也有相对应的不变量$J_1$、$J_2$、$J_3$为
+\begin{subequations}
+\begin{align}
+    J_1 &= s_{ii} = s_{11} + s_{22} + s_{33} = s_1 + s_2 + s_3 = 0 \\
+    J_2 &= - \frac{1}{2}(s_{ii}s_{jj} - s_{ij}s_{ij}) = \frac{1}{2} s_{ij} s_{ij} = \frac{1}{2} s_i s_i  \label{ch_stress:J2} \\
+    J_3 &= \epsilon_{ijk}s_{1i}s_{2j}s_{3k} = s_1 s_2 s_3
+\end{align}
+\end{subequations}
+对比式\eqref{ch_stress:I2}与式\eqref{ch_stress:J2}可以发现，为了表示方便$J_2$的符号与$I_2$相反。此时，$\sqrt{2J_2}$为偏应力张量$\boldsymbol s$的模。将式\eqref{ch_stress:ps}代入式\eqref{ch_stress:J2}$J_2$可采用$\sigma_{ij}$进行表示
+\begin{equation}
+\begin{split}
+    J_2 &= \frac{1}{2} s_{ij} s_{ij} \\
+    &= \frac{1}{2} (\sigma_{ij}-\frac{1}{3}\sigma_{kk}\delta_{ij})(\sigma_{ij}-\frac{1}{3}\sigma_{ll}\delta_{ij}) \\
+    &= \frac{1}{2}(\sigma_{ij}\sigma_{ij} - \frac{1}{3}\sigma_{ii}\sigma_{jj}) \\
+    &= \frac{1}{3}(\sigma_{11}^2 + \sigma_{22}^2 + \sigma_{33}^2 - \sigma_{11}\sigma_{22} - \sigma_{11}\sigma_{33} - \sigma_{22}\sigma_{33}) \\ &+ \sigma_{12}^2 + \sigma_{13}^2 + \sigma_{23}^2 \\
+    &= \frac{1}{6}((\sigma_{11} - \sigma_{22})^2 + (\sigma_{22}-\sigma_{33})^2 + (\sigma_{33}-\sigma_{11})^2) \\ &+ \sigma_{12}^2 + \sigma_{13}^2 + \sigma_{23}^2
+\end{split}
+\end{equation}
+上式也采用主应力$\sigma_i$表示为
+\begin{equation}\label{ch_stress:J22}
+    J_2 = \frac{1}{6}((\sigma_{1} - \sigma_{2})^2 + (\sigma_{2}-\sigma_{3})^2 + (\sigma_{3}-\sigma_{1})^2)
+\end{equation}\par
+应力的谱分解常用于塑性损伤破坏模型中，根据材料的破坏模式，可分为压力相关模型和压力无关模型。
+
+\section{莫尔圆}
+上节已介绍，任意一点处的应力$\boldsymbol \sigma$在不同平面上投影得到的正应力和切应力具有一定的关系，利用主应力的特性，可进一步确定正应力和切应力之间的联系。在式\eqref{ch_stress:snn}和\eqref{ch_stress:sns}中，将正应力$\sigma_{nn}$和切应力$\sigma_{ns}$简写成$\sigma$和$\tau$，并采用主方向$\boldsymbol n^{(1)}$、$\boldsymbol n^{(2)}$为坐标轴，即$\sigma_{11} = \sigma_1, \sigma_{22} = \sigma_2, \sigma_{12} = 0, \alpha = \alpha - \alpha^{(1)}$，有
+\begin{subequations}
+    \begin{align}
+        \sigma = \sigma_{nn} &= \frac{1}{2}(\sigma_1 + \sigma_2) + \frac{1}{2}(\sigma_1 - \sigma_2)\cos 2 (\alpha - \alpha^{(1)}) \\
+        \tau = \sigma_{ns} &= \frac{1}{2}(\sigma_2 - \sigma_1) \sin 2(\alpha - \alpha^{(1)})
+    \end{align}
+\end{subequations}
+根据三角函数关系进一步将上式化简为
+\begin{equation}\label{ch_stress:mohr2d}
+    (\sigma - \frac{1}{2}(\sigma_1 + \sigma_2))^2 + \tau^2 = \frac{1}{4}(\sigma_1-\sigma_2)^2
+\end{equation}
+如图所示，将$\sigma$作为$x$轴，$\tau$作为$y$轴，式\eqref{ch_stress:mohr2d}为圆形。该圆称为\textbf{莫尔圆}（Mohr's circle），其圆心坐标为$(\frac{1}{2}(\sigma_1 + \sigma_2),0)$，半径为$\frac{1}{2}(\sigma_1-\sigma_2)$。此时，一点处不同切面的正应力和切应力只能在莫尔圆上进行取值，从该圆可以很方便地知道一点处正应力和切应力的取值范围。\par
+在塑性力学中，莫尔圆通常可用于制定剪切相关的塑性准则，这些准则通常在剪力最大的切面上产生塑性应变。由莫尔圆可知最大剪应力为莫尔圆的半径，即
+\begin{equation}
+    \tau_{\mathrm{max}} = \frac{1}{2}(\sigma_1 - \sigma_2)
+\end{equation}
+此时，最大剪应力平面与主应力方向夹角$45^\circ$
+\begin{equation}
+    \sin 2(\alpha - \alpha^{(1)}) = 1 \quad \Rightarrow \quad \alpha = \alpha^{(1)} \pm \frac{\pi}{4}
+\end{equation}

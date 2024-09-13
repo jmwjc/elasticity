@@ -1,0 +1,404 @@
+\chapter{有限元法}
+本章主要介绍几种常用的有限近似方案，包括一维的拉格朗日插值近似、四节点双线性单元和三角线性单元。同时介绍伽辽金弱形式中采用的数值积分方法——高斯积分方法，并通过简单的悬臂梁问题，详细讨论如何采用有限法求解多维问题。
+\section{弹性力学问题伽辽金有限元法}
+在多维情况下，与强形式\eqref{ch_elasticity:strong}相对应的势能泛函$\Pi$可由内力功和外力功表示为如下形式
+\begin{equation}
+        \Pi(\boldsymbol x) = \underbrace{\int_\Omega \frac{1}{2} \boldsymbol \sigma : \boldsymbol \varepsilon d\Omega}_{\mathrm{Internal\;energy}} - \underbrace{\int_{\Gamma^t} \boldsymbol u \cdot \boldsymbol t d\Gamma - \int_\Omega \boldsymbol u \cdot \boldsymbol b d\Omega}_{\mathrm{External\;energy}}
+\end{equation}
+令上式的变分为零可得相对应的伽辽金弱形式为
+\begin{equation}\label{ch_fem:weak}
+\int_\Omega \delta \boldsymbol \sigma : \boldsymbol \varepsilon d\Omega = \int_{\Gamma^t} \delta \boldsymbol u \cdot \boldsymbol t d\Gamma + \int_\Omega \delta \boldsymbol u \cdot \boldsymbol b d\Omega
+\end{equation} \par
+在有限法中，整体求解域将离散为分片单元$\{\Omega_C\}_{C=1}^{n_e}$，$\cup_{C=1}^{n_e}\Omega_C\approx \Omega$，$n_e$为总单元个数。单元顶点$\{\boldsymbol x_I\}_{I=1}^{n_p}$为有限元控制节点，$n_p$为总节点数。在每个节点上都配有相对应的形函数$N_I$和节点系数$d_I$，对于一个标量场变量$u$，其有限元近似$u^h$可表示为
+\begin{equation}
+u^h(\boldsymbol x) = \sum_{I=1}^{n_p} N_I(\boldsymbol x) d_I
+\end{equation}
+而对于弹性力学问题，此时的场变量为位移张量$\boldsymbol u$，位移张量的分量$u_i$的有限元近似$u_i^h$及其变分近似$\delta u_i^h$为
+\begin{equation}\label{ch_fem:uh}
+u_i^h(\boldsymbol x) = \sum_{I=1}^{n_p} N_I(\boldsymbol x) d_{iI},\quad
+\delta u_i^h(\boldsymbol x) = \sum_{I=1}^{n_p} N_I(\boldsymbol x) \delta d_{iI}
+\end{equation}
+采用矩阵形式表示时，近似的位移$\boldsymbol u$表示为
+\begin{equation}
+\boldsymbol u^h = \sum_{I=1}^{n_p}\boldsymbol N_I \boldsymbol d_I
+\end{equation}
+显然，在多维弹性力学问题中，一个节点上具有多个节点系数。此时通过几何方程可得近似的应变为
+\begin{equation}\label{ch_fem:epsilonh}
+\boldsymbol \varepsilon^h(\boldsymbol x) = \sum_{I=1}^{n_p} \boldsymbol B_I(\boldsymbol x) \boldsymbol d_I
+\end{equation}
+其中，$\boldsymbol \varepsilon^h$为近似应变向量，$\boldsymbol d_I$为节点系数向量，$\boldsymbol B_I$为位移梯度矩阵，各向量和矩阵的表达式为
+\begin{itemize}
+    \item 三维情况：
+\begin{equation}
+\boldsymbol u^h = \{u_1^h,\;u_2^h,\;u_3^h\}^T
+\end{equation}
+\begin{equation}
+\boldsymbol \varepsilon^h = \{\varepsilon^h_{11},\;\varepsilon^h_{22},\;\varepsilon^h_{33},\;2\varepsilon^h_{12},\;2\varepsilon^h_{13},\;2\varepsilon^h_{23}\}^T
+\end{equation}
+\begin{equation}
+\boldsymbol d_I = \{d_{1I},\; d_{2I},\; d_{3I}\}^T
+\end{equation}
+\begin{equation}
+\boldsymbol N_I = 
+\begin{bmatrix}
+        N_I & 0 & 0 \\
+        0 & N_I & 0 \\
+        0 & 0 & N_I
+\end{bmatrix}
+\end{equation}
+\begin{equation}
+\boldsymbol B_I = 
+\begin{bmatrix}
+        N_{I,1} & 0 & 0 \\
+        0 & N_{I,2} & 0 \\
+        0 & & 0 N_{I,3} \\
+        N_{I,2} & N_{I,1} & 0 \\
+        N_{I,3} & 0 & N_{I,1} \\
+        0 & N_{I,3} & N_{I,2}
+\end{bmatrix}
+\end{equation}
+    \item 二维情况：
+\begin{equation}
+\boldsymbol u^h = \{u_1^h,\;u_2^h\}^T
+\end{equation}
+\begin{equation}
+\boldsymbol \varepsilon^h = \{\varepsilon^h_{11},\;\varepsilon^h_{22},\;2\varepsilon^h_{12}\}^T
+\end{equation}
+\begin{equation}
+\boldsymbol d_I = \{d_{1I},\; d_{2I}\}^T
+\end{equation}
+\begin{equation}
+\boldsymbol N_I = 
+\begin{bmatrix}
+        N_I & 0 \\
+        0 & N_I
+\end{bmatrix}
+\end{equation}
+\begin{equation}
+\boldsymbol B_I = 
+\begin{bmatrix}
+        N_{I,1} & 0 \\
+        0 & N_{I,2} \\
+        N_{I,2} & N_{I,1}
+\end{bmatrix}
+\end{equation}
+\end{itemize}\par
+进一步通过物理方程\eqref{ch_elasticity:constitutive}与近似的应变相结合，可得近似的应力表达式为
+\begin{equation}\label{ch_fem:sigmah}
+\boldsymbol \sigma^h = \boldsymbol D \boldsymbol \varepsilon^h = \sum_{I=1}^{n_p}\boldsymbol D \boldsymbol B_I \boldsymbol d_I
+\end{equation}
+将近似的位移\eqref{ch_fem:uh}、应变\eqref{ch_fem:epsilonh}和应力\eqref{ch_fem:sigmah}代入伽辽金弱形式\eqref{ch_fem:weak}中，等式左边可改写为
+\begin{equation}
+\begin{split}
+\int_{\Omega}\delta \boldsymbol \sigma^h : \boldsymbol \varepsilon^h d\Omega &= \sum_{I,J=1}^{n_p}\delta \boldsymbol d_I^T \int_{\Omega}\boldsymbol B_I \boldsymbol D \boldsymbol B_J^T d\Omega \boldsymbol d_J \\
+&=\sum_{I,J=1}^{n_p}\delta \boldsymbol d_I^T \boldsymbol K_{IJ} \boldsymbol d_J \\
+&= \delta \boldsymbol d^T \boldsymbol K \boldsymbol d
+\end{split}
+\end{equation}
+式中$\boldsymbol K$为刚度矩阵，另一方面，等式右边可改写为
+\begin{equation}
+\begin{split}
+\int_{\Gamma^t}\delta \boldsymbol u \cdot \boldsymbol t d\Gamma + \int_{\Omega} \delta \boldsymbol u \cdot \boldsymbol b d\Omega &= \sum_{I=1}^{n_p} \delta \boldsymbol d_I (\int_{\Gamma^t}\boldsymbol N_I \boldsymbol t d\Gamma + \int_{\Omega}\boldsymbol N_I \boldsymbol b d\Omega) \\
+                                                                                                                                 &= \sum_{I=1}^{n_p} \delta \boldsymbol d^T_I \boldsymbol f_I \\
+                                                                                                                                 &= \delta \boldsymbol d^T \boldsymbol f
+\end{split}
+\end{equation}
+其中，$\boldsymbol f$为力向量。同时消去等式左右两边的虚位移系数$\delta \boldsymbol d$可得最终的离散控制方程
+\begin{equation}
+\boldsymbol K \boldsymbol d = \boldsymbol f
+\end{equation}
+式中
+\begin{subequations}\label{ch_fem:discrete}
+\begin{align}
+        \boldsymbol K = \mathsf{A}_{I,J=1}^{n_p} \boldsymbol K_{IJ}, \quad \boldsymbol K_{IJ} = \int_{\Omega}\boldsymbol B_I^T \boldsymbol D \boldsymbol B_J d\Omega \label{ch_fem:stiffness} \\
+        \boldsymbol f = \mathsf{A}_{I=1}^{n_p} \boldsymbol f_{I}, \quad \boldsymbol f_I = \int_{\Gamma^t}\boldsymbol N_I \boldsymbol t d\Gamma + \int_{\Omega}\boldsymbol N_I \boldsymbol b d\Omega \label{ch_fem:force}
+\end{align}
+\end{subequations}
+其中，$\mathsf{A}$是组装算子。\par
+有限元近似在全域上将位移离散为分片多项式的形式，离散控制方程表达式\eqref{ch_fem:discrete}中的积分也在每个单元中通过数值方式进行实现。最常用的数值积分方法是\textbf{高斯积分法}（Gauss quadrature），数值积分通常表示为被积函数在高斯积分点处的取值乘以相对应的权重再进行求和。以刚度矩阵为例，数值积分可表示为
+\begin{equation}
+\begin{split}
+\int_{\Omega}\boldsymbol B_I \boldsymbol D \boldsymbol B_J^T d\Omega &=
+\sum_{C=1}^{n_c} \int_{\Omega_C}\boldsymbol B_I^T \boldsymbol D \boldsymbol B_J d\Omega \\
+&\sum_{C=1}^{n_c}\sum_{G=1}^{n_g} \boldsymbol B_I^T(\boldsymbol x_G) \boldsymbol D \boldsymbol B_J(\boldsymbol x_G)w_G \\
+\end{split}
+\end{equation}
+式中$\boldsymbol x_G$和$w_G$为高斯积分点和权重。在不同类型的有限元近似中，高斯积分点和权重各不相同。从离散控制方程中可以看出，仅需要确定有限元近似的形函数及其梯度和相对应的高斯积分方案即可求解问题。
+
+\section{拉格朗日插值近似}
+在一维有限元近似中，形函数可采用拉格朗日插值近似函数。拉格朗日插值近似可将离散节点近似为相应阶次的函数，并且要求函数经过每个离散节点。当采用线性拉格朗日插值近似时，每段近似函数由两个形函数和两个节点系数组成，在以$x_1$和$x_2$为顶点的单元中，近似位移可表示为
+\begin{equation}
+u^h(x) = \frac{x-x_2}{x_1-x_2} d_1 + \frac{x-x_1}{x_2-x_1} d_2 = \sum_{I=1}^{2} N_I(x) d_I
+\end{equation}
+其中
+\begin{equation}\label{ch_fem:shape1}
+N_1(x) = \frac{x-x_2}{x_1-x_2}, \quad N_2(x) = \frac{x-x_1}{x_2-x_1}
+\end{equation}\par
+从形函数表达式中可以看出，形函数具有插值性（Kronecker delta property），即$N_I(x_J)=\delta_{IJ}$。当形函数具有插值性时，节点系数$d_I$具有物理意义，即近似函数在节点$x_I$处的取值，$d_I=u^h(x_I)$。此时，形函数相对应的梯度为
+\begin{equation}\label{ch_fem:dshape}
+N_{1,x} = \frac{1}{x_1-x_2} = - \frac{1}{L}, \quad N_{2,x} = \frac{1}{x_2-x_1} = \frac{1}{L}
+\end{equation}
+式中$L$为单元长度。\par
+形函数表达式\eqref{ch_fem:shape1}在程序实现中并不是最简单的形式，表达式中$x_1,x_2$分别为单元的顶点，但每个单元的顶点各不相同。这里引入参数空间表示形函数，可进一步化简形函数表达式。物理空间$x\in[x_1,x_2]$将投影到$\xi\in[-1,1]$的参数空间中，此时物理坐标$x$可采用参数坐标$\xi$表示为
+\begin{equation}\label{ch_fem:x}
+x(\xi)=\frac{1-\xi}{2}x_1 + \frac{1+\xi}{2}x_2
+\end{equation}
+将由参数坐标表示的$x$表达式式\eqref{ch_fem:x}代入形函数表达式\eqref{ch_fem:shape1}，形函数可用参数坐标表示为
+\begin{equation}\label{ch_fem:shape11}
+N_1(\xi) = \frac{1-\xi}{2}, \quad N_2(\xi) = \frac{1+\xi}{2}
+\end{equation} \par
+值得注意的是，结合式\eqref{ch_fem:x}与形函数表达式\eqref{ch_fem:shape11}可知，物理坐标$x$也可采用形函数和顶点坐标插值表示。当场变量与物理坐标采用相同方式投影至参数空间时，称之为\textbf{等参投影}。此时，相对应形函导数也可通过下式进行计算
+\begin{equation}
+N_{I,x} = N_{I,\xi} \xi_{,x} = N_{I,\xi} J
+\end{equation}
+式中$J=\xi_{,x}$为雅可比（Jacobi），其可通过式\eqref{ch_fem:x}计算得到
+\begin{equation}
+J = \xi_{,x} = \frac{1}{x_{,\xi}} = \frac{2}{x_2 - x_1} = \frac{2}{L}
+\end{equation}
+此时形函数\eqref{ch_fem:shape1}的梯度为
+\begin{equation}\label{ch_fem:dshape1}
+N_{1,x} = N_{1,\xi}J=-\frac{1}{L},\quad N_{2,x} = N_{2,\xi}J = \frac{1}{L}
+\end{equation}\par
+从式中可以看出通过参数坐标得到梯度\eqref{ch_fem:dshape1}与直接求导得到的表达式\eqref{ch_fem:dshape}相同。\par
+\begin{table}[!ht]
+\centering
+\caption{一维高斯积分点及权重}
+\begin{tabular}{cccc}
+\toprule
+$n_g$ & $\xi_G$ & $w_G$ & 积分精度 \\
+\midrule
+1 & 0 & 2 & 1 \\ \addlinespace \hline
+2 & $\pm \frac{1}{\sqrt{3}}$ & 1 & 3 \\ \addlinespace \hline
+\multirow{2}{*}{3} & 0 & $\frac{8}{9}$ & \multirow{2}{*}{5} \\ \addlinespace
+  & $\pm \sqrt{\frac{3}{5}}$ & $\frac{5}{9}$ &  \\ \addlinespace \hline
+\multirow{2}{*}{4} & $\pm \sqrt{\frac{3}{7}-\frac{2}{7}\sqrt{\frac{6}{5}}}$ & $\frac{18+\sqrt{30}}{36}$ & \multirow{2}{*}{7} \\ \addlinespace
+  & $\pm \sqrt{\frac{3}{7}+\frac{2}{7}\sqrt{\frac{6}{5}}}$ & $\frac{18-\sqrt{30}}{36}$ &  \\ \addlinespace \hline
+\multirow{3}{*}{5} & 0 & $\frac{128}{225}$ & \multirow{3}{*}{9} \\ \addlinespace
+  & $\pm \frac{1}{3}\sqrt{5-2\sqrt{\frac{10}{7}}}$ & $\frac{322+13\sqrt{70}}{900}$ &  \\ \addlinespace
+  & $\pm \frac{1}{3}\sqrt{5+2\sqrt{\frac{10}{7}}}$ & $\frac{322-13\sqrt{70}}{900}$ &  \\ \addlinespace \hline
+$n$ & \cdots & \cdots & $2n-1$ \\
+\bottomrule
+\end{tabular}
+\label{ch_fem:table1}
+\end{table}
+对比式\eqref{ch_fem:shape1}和式\eqref{ch_fem:shape11}，采用参数坐标描述的形函数表达式在每个单元中一样，在程序实现的过程中计算效率高。同时，相对应的高斯积分点位置采用参数坐标表示时，参数坐标是固定的，表(\ref{ch_fem:table1})列出了一维的高斯积分点及其权重。
+
+\section{四节点双线性单元(QUAD)}
+四节点单元顾名思义就是一个单元有4个节点，形函数建立在四边形上。形函数的值等于一维线性函数通过张量积得到
+\begin{equation}
+\left \{
+\begin{split}
+N_1 &= \frac{1}{4}(1-\xi)(1=\eta) \\
+N_2 &= \frac{1}{4}(1+\xi)(1=\eta) \\
+N_3 &= \frac{1}{4}(1+\xi)(1+\eta) \\
+N_4 &= \frac{1}{4}(1-\xi)(1+\eta) \\
+\end{split}
+\right .
+\end{equation}
+或
+\begin{equation}
+\begin{split}
+N_I = \frac{1}{4}(1+\xi_I \xi)(1+\eta_I \eta) \\
+\xi_I =
+\begin{cases}
+1 & I = 2,3 \\
+-1 & I = 1,4
+\end{cases}, \quad
+\eta_I =
+\begin{cases}
+1 & I = 3,4 \\
+-1 & I = 1,2
+\end{cases}
+\end{split}
+\end{equation}\par
+从四节点单元表达式中可以看出，其形函数表达式包含了两个一维线性形函数表达式\eqref{ch_fem:shape11}相乘，所以也称之为\textbf{双线性单元}。此时，形函数的导数可表示为
+\begin{equation}
+\begin{cases}
+N_{I,x} = N_{I,\xi} \xi_{,x} + N_{I,\eta} \eta_{,x} \\
+N_{I,y} = N_{I,\xi} \xi_{,y} + N_{I,\eta} \eta_{,y}
+\end{cases}
+\end{equation}
+或改写为矩阵形式
+\begin{equation}\label{ch_fem:dshape2}
+\begin{Bmatrix}
+N_{I,x} \\ N_{I,y}
+\end{Bmatrix} =
+\begin{bmatrix}
+\xi_{,x} & \eta_{,x} \\
+\xi_{,y} & \eta_{,y}
+\end{bmatrix}
+\begin{Bmatrix}
+N_{I,\xi} \\ N_{I,\eta}
+\end{Bmatrix} =
+\boldsymbol J^{-T}
+\begin{Bmatrix}
+N_{I,\xi} \\ N_{I,\eta}
+\end{Bmatrix}
+\end{equation}
+式中$\boldsymbol J$为雅可比矩阵。在二维四节点单元中，雅可比不再是一个常数，而是矩阵，其表达式可表示为
+\begin{equation}
+\boldsymbol J = [J_{ij}] = \left [ \frac{\partial x_i}{\partial \xi_j} \right ]
+\end{equation}\par
+而四节点单元为等参投影，坐标$x,y$可采用形函数表示为
+\begin{equation}
+x = \sum_{I=1}^4 N_I x_I,\quad y = \sum_{I=1}^4 N_I y_I
+\end{equation}
+其中$(x_I,y_I)$为四节点单元节点坐标。此时，雅可比矩阵中的元素可改写为
+\begin{equation}
+J_{ij} = \frac{\partial x_i}{\partial \xi_j} = \frac{\partial (\sum_{I=1}^4 N_{I} x_{iI})}{\partial \xi_j} = \sum_{I=1}^4 N_{I,j} x_{iI}
+\end{equation}\par
+在四节点单元中，高斯积分方案可采用一维的高斯积分方案通过张量积确定，积分精度也和一维情况相同。例如，通过一维2点高斯积分方案可得到四节点单元4点高斯积分方案，相应的节点坐标和权重为
+\begin{table}[!ht]
+\centering
+\begin{tabular}{cccc}
+\toprule
+$\xi_G$ & \eta_G & $w_G$ \\
+\midrule
+$-\frac{1}{\sqrt{3}}$ & $-\frac{1}{\sqrt{3}}$ & 1 \\
+$\frac{1}{\sqrt{3}}$ & $-\frac{1}{\sqrt{3}}$ & 1 \\
+$\frac{1}{\sqrt{3}}$ & $\frac{1}{\sqrt{3}}$ & 1 \\
+$-\frac{1}{\sqrt{3}}$ & $\frac{1}{\sqrt{3}}$ & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{三角形常应变单元(CST)}
+在三节点三角形单元中，场变量假设为线性函数，如
+\begin{equation}
+u^h(x,y) = a_0 + a_1 x + a_2 y
+\end{equation}
+其中，$a_i,i=0,1,2$为常系数，常系数可通过满足三角形节点处的插值性条件求得
+\begin{equation}
+\begin{cases}
+a_0 + a_1 x_1 + a_2 y_1 = u_1 \\
+a_0 + a_1 x_2 + a_2 y_2 = u_2 \\
+a_0 + a_1 x_3 + a_2 y_3 = u_3
+\end{cases}
+\end{equation}
+式中$(x_i,y_i),i=1,2,3$为三角形顶点坐标，$u_i$为相对应的节点系数。通过整理可得
+\begin{equation}
+\begin{split}
+u^h(\boldsymbol x) &= \frac{A_1}{A} u_1 + \frac{A_2}{A} u_2 + \frac{A_3}{A} u_3 \\
+&= \xi_1 u_1 + \xi_2 u_2 + \xi_3 u_3 \\
+&= \sum_{I=1}^{3}N_I u_I
+\end{split}
+\end{equation}\par
+如图所示，$A$为三角形单元面积，$N_I=\xi_I$为三节点有限元形函数，$A_1,A_2,A_3$分别为以$\boldsymbol x,\boldsymbol x_2,\boldsymbol x_3$、$\boldsymbol x,\boldsymbol x_3,\boldsymbol x_1$、$\boldsymbol x,\boldsymbol x_1,\boldsymbol x_2$为顶点组成三角形的面积。此时，在三角形单元内的参数坐标可表示为$\xi_i=\frac{A_i}{A}$，$\xi_1+\xi_2+\xi_3=1$。\par
+三节点单元形函数梯度也可通过式\eqref{ch_fem:dshape2}进行计算，该单元也是等参单元，物理坐标可通过三角形单元形函数和三角形顶点表示为
+\begin{equation}
+\boldsymbol x = \xi_1 \boldsymbol x_1 + \xi_2 \boldsymbol x_2 + \xi_3 \boldsymbol x_3
+\end{equation}
+此时相对应的雅可比矩阵和其逆矩阵为
+\begin{equation}
+\boldsymbol J = 
+\begin{bmatrix}
+x_1-x_3 & x_2-x_3 \\
+y_1-y_3 & y_2-y_3
+\end{bmatrix},\quad
+\boldsymbol J^{-1} = \frac{1}{2A}
+\begin{bmatrix}
+y_2-y_3 & x_3-x_2 \\
+y_2-y_1 & x_1-x_3
+\end{bmatrix}
+\end{equation}
+将上式代入式\eqref{ch_fem:dshape2}中可得三节点单元形函数导数为
+\begin{equation}\label{ch_fem:dshape3}
+\begin{split}
+\begin{Bmatrix}
+N_{1,x} \\ N_{1,y}
+\end{Bmatrix} &= \frac{1}{2A}
+\begin{Bmatrix}
+y_2-y_3 \\ x_3-x_2
+\end{Bmatrix}\\
+\begin{Bmatrix}
+N_{2,x} \\ N_{2,y}
+\end{Bmatrix} &= \frac{1}{2A}
+\begin{Bmatrix}
+y_3-y_1 \\ x_1-x_3
+\end{Bmatrix}\\
+\begin{Bmatrix}
+N_{3,x} \\ N_{3,y}
+\end{Bmatrix} &= \frac{1}{2A}
+\begin{Bmatrix}
+y_1-y_2 \\ x_2-x_1
+\end{Bmatrix}
+\end{split}
+\end{equation}\par
+从形函数导数的表达式\eqref{ch_fem:dshape3}中可以看出，三节点单元形函数导数均为常数，所以也称为常应变三角形单元（Constant strain triangle, CST）。在三角形单元中，数值积分方案也不同于四节点双线性单元。表\ref{ch_fem:table3}为常用的三角形高斯积分点及其权重。
+\begin{table}[!ht]
+\centering
+\caption{三角形单元高斯积分点及权重}
+\begin{tabular}{ccccc}
+\toprule
+$n_g$ & $\xi_G$ & $\eta_G$ & $w_G$ & 积分精度 \\
+\midrule
+1 & $\frac{1}{3}$ & $\frac{1}{3}$ & 1 & 1 \\ \addlinespace \hline
+3 & $\frac{2}{3}$ & $\frac{1}{6}$ & $\frac{1}{3}$ & 2 \\ \addlinespace \hline
+\multirow{2}{*}{4} & $\frac{1}{3}$ & $\frac{1}{3}$ & $-\frac{9}{16}$ & \multirow{2}{*}{3} \\ \addlinespace
+                   & $\frac{3}{5}$ & $\frac{1}{5}$ & $\frac{25}{48}$ &  \\ \addlinespace
+\bottomrule
+\end{tabular}
+\label{ch_fem:table3}
+\end{table}
+
+\section{有限元法求解一维问题}
+同样地考虑第\ref{introduction}章中的拉压杆问题，并采用两节点线性有限元形函数进行求解。首先采用等距的两个单元进行求解，将形函数及其导数\eqref{ch_fem:shape1}、\eqref{ch_fem:dshape1}代入离散控制方程\eqref{ch_fem:discrete}中，此时刚度矩阵\eqref{ch_fem:stiffness}为
+\begin{equation}\label{ch_fem:stiffness1}
+\boldsymbol K =
+\underbrace{
+\frac{2EA}{L}
+\begin{bmatrix}
+        1 & -1 & 0 \\
+        -1 & 1 & 0 \\
+        0 & 0 & 0
+\end{bmatrix}}_{\mathrm{Element\;1}} +
+\underbrace{
+\frac{2EA}{L}
+\begin{bmatrix}
+        0 & 0 & 0 \\
+        0 & 1 & -1 \\
+        0 & -1 & 1
+\end{bmatrix}}_{\mathrm{Element\;2}}
+= \frac{2EA}{L}
+\begin{bmatrix}
+        1 & -1 & 0 \\
+        -1 & 2 & -1 \\
+        0 & -1 & 1
+\end{bmatrix}
+\end{equation}
+相对应的力向量\eqref{ch_fem:force}为
+\begin{equation}\label{ch_fem:force1}
+\boldsymbol f = 
+\underbrace{
+\begin{Bmatrix}
+\frac{bL}{4} \\ \frac{bL}{4} \\ 0
+\end{Bmatrix}}_{\mathrm{Element\;1}} +
+\underbrace{
+\begin{Bmatrix}
+0 \\ \frac{bL}{4} \\ \frac{bL}{4} + P
+\end{Bmatrix}}_{\mathrm{Element\;2}} =
+\begin{Bmatrix}
+\frac{bL}{4} \\ \frac{bL}{2} \\ \frac{bL}{4} + P
+\end{Bmatrix}
+\end{equation} \par
+从上式可以看出，根据拉格朗日近似的插值特性，节点上的外荷载可直接施加在相应位置的外力向量上。同理，由位移边界条件和插值特性可知，$u^h(0)=d_1=0$。仅需对刚度矩阵\eqref{ch_fem:stiffness1}和力向量\eqref{ch_fem:force1}改写为如下形式，即可求得满足位移边界条件的结果。
+\begin{equation}
+\boldsymbol K = \frac{2EA}{L}
+\begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & 2 & -1 \\
+        0 & -1 & 1
+\end{bmatrix}, \quad
+\boldsymbol f =
+\begin{Bmatrix}
+0 \\ \frac{bL}{2} \\ \frac{bL}{4} + P
+\end{Bmatrix}
+\end{equation}
+根据上式可解得节点系数为
+\begin{equation}
+\boldsymbol d = 
+\begin{Bmatrix}
+0 \\ \frac{3bL^2}{8EA} + \frac{PL}{2EA} \\ \frac{bL^2}{2EA} + \frac{PL}{EA}
+\end{Bmatrix}
+\end{equation} \par
+对比求得的近似解和精确解可以看出，通过有限元法得到的近似解在节点上等于精确解，即$d_I = u(x_I)$。但需要指出，这种有限元解的插值性质仅在一维情况存在，在二维三节点单元和四节点单元的有限元解都不具有插值性质。

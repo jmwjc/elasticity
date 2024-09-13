@@ -1,0 +1,189 @@
+\chapter{弹性}
+本章介绍各向同性弹性情况下的物理方程（应力应变关系），也称为\textbf{本构关系}（Constitutive relationship）。同时，本章还介绍了两种常用的弹性力学问题平面假设——平面应力问题和平面应变问题。
+\section{4阶弹性张量}
+应力张量$\boldsymbol \sigma$和应变张量$\boldsymbol \varepsilon$都是2阶张量，两者之间可以通过一个4阶系数张量建立联系
+\begin{equation}\label{ch_elasticity:stress}
+\boldsymbol \sigma = \boldsymbol C : \boldsymbol \varepsilon, \quad \sigma_{ij} = C_{ijkl} \varepsilon_{kl}
+\end{equation}
+或
+\begin{equation}\label{ch_elasticity:C}
+\boldsymbol C = \frac{\partial \boldsymbol \sigma}{\partial \boldsymbol \varepsilon}
+\end{equation}
+式中$\boldsymbol C$称为4阶弹性张量，该张量具有81个分量。然后根据应力张量和应变张量的对称性，$\sigma_{ij} = \sigma_{ji}, \varepsilon_{ij} = \varepsilon_{ji}$，可知
+\begin{equation}\label{ch_elasticity:r1}
+C_{ijkl} = C_{jikl} = C_{ijlk}
+\end{equation}\par
+各向同性弹性材料均存在一应变能密度函数$W$，其应力张量等于应变能密度函数对应变张量的偏导数，即
+\begin{equation}\label{ch_elasticity:sigma}
+\boldsymbol \sigma = \frac{\partial W}{\partial \boldsymbol \varepsilon}
+\end{equation}
+进一步引入\eqref{ch_elasticity:C}，式\eqref{ch_elasticity:sigma}可改写为
+\begin{equation}
+\boldsymbol C = \frac{\partial^2 W}{\partial \boldsymbol \varepsilon^2}, \quad C_{ijkl} = \frac{\partial^2 W}{\partial \varepsilon_{ij} \partial \varepsilon_{kl}}
+\end{equation}
+根据上式可以看出
+\begin{equation}\label{ch_elasticity:r2}
+C_{ijkl} = C_{klij}
+\end{equation}
+结合式\eqref{ch_elasticity:r1}和\eqref{ch_elasticity:r2}可以推出，4阶弹性张量$\boldsymbol C$可假设为如下形式
+\begin{equation}\label{ch_elasticity:Cijkl}
+C_{ijkl} = \lambda \delta_{ij} \delta_{kl} + \mu (\delta_{ik}\delta_{jl} + \delta_{il}\delta_{jk})
+\end{equation}
+式中$\lambda$和$\mu$称为\textbf{拉梅常数}（Lamé parameters）。通过拉梅常数表示4阶弹性张量是根据对称性确定的两个常数，然而通过力学试验而确定的常数为杨氏模量（Young's modulus）$E$和泊松比（Poisson's ratio）$\nu$，$\lambda,\mu$和$E,\nu$具有如下关系
+\begin{equation}\label{young}
+\lambda = \frac{E\nu}{(1+\nu)(1-2\nu)},\quad \mu = \frac{E}{2(1+\nu)}
+\end{equation}\par
+此时，将式\eqref{ch_elasticity:Cijkl}、\eqref{young}代入式\eqref{ch_elasticity:stress}，应力可采用拉梅常数或杨氏模量、柏松比表示为
+\begin{subequations}\label{ch_elasticity:stress1}
+\begin{align}
+    \sigma_{ij} &= \lambda \varepsilon_{kk}\delta_{ij}  + 2\mu \varepsilon_{ij} \\
+    \sigma_{ij} &= \frac{E\nu}{(1+\nu)(1-2\nu)} \varepsilon_{kk}\delta_{ij}  + \frac{E}{1+\nu} \varepsilon_{ij}
+\end{align}
+\end{subequations}
+上式即为各向同性同性材料应力应变本构关系。同样地，应变分量也可以采用应变进行表示
+\begin{equation}
+\varepsilon_{ij} = \frac{1+\nu}{E}\sigma_{ij} - \frac{\nu}{E}\delta_{ij}\sigma_{kk}
+\end{equation}\par
+除了采用拉梅常数或杨氏模量、泊松比表示本构关系外，还可以通过应力张量和应变张量的谱分解进行改写
+\begin{equation}
+\begin{split}
+    \sigma_{ij} &= \lambda \varepsilon_{kk}\delta_{ij} + 2\mu \varepsilon_{ij} \\
+                &= (\lambda+\frac{2}{3}\mu) \varepsilon_{kk}\delta_{ij} + 2\mu (\varepsilon_{ij}-\frac{1}{3}\varepsilon_{kk}\delta_{ij}) \\
+                &= 3K \varepsilon_m\delta_{ij} + 2G e_{ij} \\
+                &= p\delta_{ij} + s_{ij} \\
+\end{split}
+\end{equation}
+其中
+\begin{equation}
+p = K \varepsilon_{kk}, \quad s_{ij} = 2G e_{ij}
+\end{equation}
+式中$K$为屈曲模量（bulking modulus）$G$为剪切模量（Shear modulus），$G=\mu$。从式中可以看出，静水压力仅与体积应变相关，控制结构拉伸变形。而偏应力仅与偏应变相关，控制结构剪切变形。\par
+为后续表述方便，应力张量可以采用沃伊特标记（Voigt notation）表示为向量形式
+\begin{equation}\label{ch_elasticity:constitutive}
+\boldsymbol \sigma = \boldsymbol D \boldsymbol \varepsilon
+\end{equation}
+其中，应力与应变向量为
+\begin{subequations}
+\begin{align}
+\boldsymbol \sigma &= 
+\{\sigma_{11},\; \sigma_{22},\; \sigma_{33},\; \sigma_{12},\; \sigma_{13},\; \sigma_{23}\}^T \\
+\boldsymbol \varepsilon &=
+\{\varepsilon_{11},\; \varepsilon_{22},\; \varepsilon_{33},\; 2\varepsilon_{12},\; 2\varepsilon_{13},\; 2\varepsilon_{23}\}
+\end{align}
+\end{subequations}
+此时的系数矩阵$\boldsymbol D$为
+\begin{equation}
+\boldsymbol D =
+\begin{bmatrix}
+    \lambda + 2\mu & \lambda & \lambda & 0 & 0 & 0 \\
+    \lambda & \lambda + 2\mu & \lambda & 0 & 0 & 0 \\
+    \lambda & \lambda & \lambda + 2\mu & 0 & 0 & 0 \\
+    0 & 0 & 0 & \mu & 0 & 0 \\
+    0 & 0 & 0 & 0 & \mu & 0 \\
+    0 & 0 & 0 & 0 & 0 & \mu \\
+\end{bmatrix}
+\end{equation}
+或
+\begin{equation}
+\boldsymbol D = \frac{E}{(1+\nu)(1-2\nu)}
+\begin{bmatrix}
+    1-\nu & \nu & \nu & 0 & 0 & 0 \\
+    \nu & 1-\nu & \nu & 0 & 0 & 0 \\
+    \nu & \nu & 1-\nu & 0 & 0 & 0 \\
+    0 & 0 & 0 & \frac{1-2\nu}{2} & 0 & 0 \\
+    0 & 0 & 0 & 0 & \frac{1-2\nu}{2} & 0 \\
+    0 & 0 & 0 & 0 & 0 & \frac{1-2\nu}{2} \\
+\end{bmatrix}
+\end{equation}\par
+沃伊特标记常用于有限元法中理论推导和程序实现过程本构关系的表示形式中，式中应力和应变的顺序是固定的。
+
+\section{平面应变与平面应力}
+三维弹性力学问题退化为低维情况需做一些特定的假设以进行问题的简化，在二维弹性力学问题有两种主要的简化方式——平面应变问题和平面应力问题。平面应变问题假设平面外方向相关的应变为零，而平面应力问题假设平面外方向相关应力为零。
+\subsection{平面应变问题(Plane strain)}
+平面应变问题可描述具有较大厚度的物体面内受力分析，如水坝结构等。在平面应变问题中假设
+\begin{equation}
+\varepsilon_{3i} = 0
+\end{equation}
+在这种假设的情况下，本构关系式\eqref{ch_elasticity:constitutive}可以化简为
+\begin{equation}
+\begin{Bmatrix}
+\sigma_{11} \\ \sigma_{22} \\ \sigma_{33} \\ \sigma_{12} \\ \sigma_{13} \\ \sigma_{23}
+\end{Bmatrix} = \frac{E}{(1+\nu)(1-2\nu)}
+\begin{Bmatrix}
+    (1-\nu)\varepsilon_{11} + \nu \varepsilon_{22} \\ \nu\varepsilon_{11} + (1-\nu)\varepsilon_{22} \\ \nu\varepsilon_{11} + \nu\varepsilon_{22} \\ (1-2\nu)\varepsilon_{12} \\ 0 \\ 0
+\end{Bmatrix}
+\end{equation}\par
+在平面应变问题中，虽然平面外方向的应变都为零，但从表达式中可以看出平面外的主应力$\sigma_{33}$并不为零。但在求解过程中，通常不需要引入$\sigma_{33}$，所以平面应变问题的本构关系可以改写为
+\begin{equation}
+\begin{Bmatrix}
+\sigma_{11} \\ \sigma_{22} \\ \sigma_{12}
+\end{Bmatrix} = \frac{E}{(1+\nu)(1-2\nu)}
+\begin{bmatrix}
+    1-\nu & \nu & 0 \\
+    \nu & 1-\nu & 0 \\
+    0 & 0 & \frac{1-2\nu}{2}
+\end{bmatrix}
+\begin{Bmatrix}
+\varepsilon_{11} \\ \varepsilon_{22} \\ 2\varepsilon_{12}
+\end{Bmatrix}
+\end{equation}
+
+\subsection{平面应力问题(Plane stress)}
+平面应力问题一半描述厚度较小物体的面内受力分析，如薄板面内问题等。与平面应变问题相反，平面应力问题则是假设平面外的应力为零，即
+\begin{equation}
+\sigma_{3i} = 0
+\end{equation}
+结合本构本构关系式\eqref{ch_elasticity:constitutive}可得
+\begin{equation}\label{ch_elasticity:strain}
+\varepsilon_{13} = \varepsilon_{23} = 0,\quad \varepsilon_{33} = - \frac{\nu}{1-\nu}(\varepsilon_{11}+\varepsilon_{22})
+\end{equation}\par
+由此可见，在平面应力问题中平面外方向不受内力作用，但该方向主方向上存在变形。将关系式\eqref{ch_elasticity:strain}回代到本构关系式\eqref{ch_elasticity:constitutive}可化简得平面应力问题本构关系式为
+\begin{equation}
+\begin{Bmatrix}
+\sigma_{11} \\ \sigma_{22} \\ \sigma_{12}
+\end{Bmatrix} = \frac{E}{1-\nu^2}
+\begin{bmatrix}
+    1 & \nu & 0 \\
+    \nu & 1 & 0 \\
+    0 & 0 & \frac{1-\nu}{2}
+\end{bmatrix}
+\begin{Bmatrix}
+\varepsilon_{11} \\ \varepsilon_{22} \\ 2\varepsilon_{12}
+\end{Bmatrix}
+\end{equation}\par
+值得注意的是，平面应变问题和平面应力问题是可以互相转换的，仅需将其中一问题的杨氏模量和柏松比通过下式进行替换，就可将问题转换为另一问题。
+\begin{equation}
+E\rightarrow \frac{E}{1-\nu^2},\quad \nu\rightarrow \frac{\nu}{1-\nu}
+\end{equation}
+
+\section{弹性力学方程组}
+利用几何方程\eqref{ch_kinematics:strain}和应力应变关系\eqref{ch_elasticity:stress1}，可将应力及其梯度采用位移表示为
+\begin{subequations}\label{ch_elasticity:stress2}
+\begin{align}
+    \sigma_{ij} &= \lambda u_{,kk} \delta_{ij} + \mu (u_{i,j} + u_{j,i}) \\
+    \boldsymbol \sigma &= \lambda \nabla \cdot \boldsymbol u \boldsymbol 1 + \mu (\boldsymbol u \nabla + \nabla \boldsymbol u)
+\end{align}
+\end{subequations}
+\begin{subequations}\label{ch_elasticity:stress3}
+\begin{align}
+    \begin{split}
+        \sigma_{ij,j} &= (\lambda+\mu) u_{j,ji} + \mu u_{i,jj} \\
+                      &= (\lambda+2\mu) u_{j,ji} - \mu (u_{j,ij} - u_{i,jj}) \\
+    \end{split} \\
+    \begin{split}
+    \nabla \cdot \boldsymbol \sigma &= (\lambda+\mu) \nabla(\nabla \cdot \boldsymbol u) + \mu \nabla^2 \boldsymbol u \\
+                                    &= (\lambda+2\mu) \nabla(\nabla \cdot \boldsymbol u) - \mu \nabla \times (\nabla \times \boldsymbol u)
+    \end{split}
+\end{align}
+\end{subequations}
+上式中$\nabla^2 = \nabla \cdot \nabla$。利用上式平衡方程和应力边界条件均可改写为用位移表示，此时弹性力学方程组为
+\begin{equation}\label{ch_elasticity:strong}
+\left \{
+\begin{array}{ll}
+    (\lambda+\mu) \nabla(\nabla \cdot \boldsymbol u) + \mu \nabla^2\boldsymbol u + \boldsymbol b = \boldsymbol 0 & \mathrm{in} \; \Omega \\
+    (\lambda+\mu) (\nabla \cdot \boldsymbol u)\boldsymbol n + \mu \nabla^2\boldsymbol u \cdot \boldsymbol n = \boldsymbol t & \mathrm{on}\; \Gamma^t \\
+    \boldsymbol u = \boldsymbol g & \mathrm{on}\; \Gamma^g
+\end{array}
+\right .
+\end{equation}\par
+在多维情况下，解析求解弹性力学方程组十分困难，仅有少数几种规则的求解域可以得到解析解。在下一章节中，将介绍如何采用能量法对该方程进行求解，在能量法中弹性力学方程称为强形式（Strong form），在方程的每个点处都必须满足。在能量法中强形式将转化为弱形式（Weak form），弱形式仅要求全域满足方程即可，并不要求全域上每点都满足，所以称之为弱形式。

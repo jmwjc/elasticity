@@ -1,0 +1,228 @@
+\chapter{变分原理}
+本章介绍弹性力学变分原理中最常用的最小势能原理，最小势能原理是有限元法的基础，本章的内容对后续有限元法的学习有重要帮助。本章将从一维杆问题出发，详细讲述变分原理的推导过程和解题思路。
+\section{最小势能原理}
+最小势能原理要求物体的位移（即变形）应满足整体势能能量在已知边界条件下取最小值。以第\ref{introduction}章一维拉压杆问题为例，势能包括外力做的功和内力做的功。杆右端的拉力$P$所做的功为$Pu\vert_{x=L}$；杆件内部微元体$dx$上体力$b$所做功为$ubdx$。整体杆件外力所做的功为
+\begin{equation}\label{ch_energy:ext}
+    W^{ext}(u) = P u\vert_{x=L} + \int_{0}^{L} u b dx
+\end{equation}\par
+对于内力功，杆件的轴力与位移（应变）具有一定联系。如图所示，在线性假设下，轴力与应变呈线性关系。此时，微元体$dx$上轴力做功为
+\begin{equation}
+\begin{split}
+    dW^{int}(u) &= \int_0^\varepsilon F_N d\varepsilon = \int_0^\varepsilon EA\varepsilon d\varepsilon \\
+                &=\frac{1}{2} EA \varepsilon^2 = \frac{1}{2} F_N \varepsilon
+\end{split}
+\end{equation}
+而整体内力功即为
+\begin{equation}\label{ch_energy:int}
+W^{int}(u) = \int_0^L \frac{1}{2} F_N(u) \varepsilon(u) dx =  \int_0^L \frac{1}{2} EA u_{,x}^2 dx
+\end{equation}\par
+结合内能\eqref{ch_energy:int}和外能\eqref{ch_energy:ext}，杆件整体势能$\Pi$为
+\begin{equation}
+\begin{split}
+    \Pi(u) &= W^{int}(u) - W^{ext}(u) \\
+           &= \int_0^L \frac{1}{2}F_N\varepsilon dx - P u\vert_{x=L} - \int_{0}^{L} u b dx
+\end{split}
+\end{equation}
+式中势能函数的变量为位移$u$，而位移$u$是关于$x$的函数，我们把这类以函数作为变量的函数称之为\textbf{泛函}（Functional），与之相对应的微分求导过程称为\textbf{变分}（Variation）。根据最小势能原理，真实位移应为势能泛函$\Pi$取最小时的位移。令势能泛函对变量$u$求一阶变分为零，可得势能泛函取得极值时的位移，即
+\begin{subequations}\label{ch_energy:weak}
+\begin{align}
+    \delta \Pi(u) = &\int_0^L \delta u_{,x} EA u_{,x} dx - \delta u P \vert_{x=L} - \int_0^L \delta u b dx = 0 \\
+    \Rightarrow &\int_0^L \delta u_{,x} EA u_{,x} dx = \delta u P \vert_{x=L} + \int_0^L \delta u b dx
+\end{align}
+\end{subequations}
+式中$\delta u$为位移的变分，上式即是强形式\eqref{ch_introduction:strong}的弱形式，该弱形式不同于强形式，仅要求在全域满足上式即可。同时，上式也称为虚功原理，而$\delta u$即为虚功原理中的虚位移。虚位移$\delta u$与位移$u$两者并不相同，$\delta u$是物体所有可能发生的位移，所以称之为虚位移。需要注意的是，当$\delta \Pi(u)=0$时，势能泛函$\Pi(u)$不仅为极小值，同时也能证明是最小值，具体证明过程可参考相关文献。
+
+\section{里兹-伽辽金法}
+根据最小势能原理，弹性力学方程组就可转化为如下\textbf{里兹-伽辽金问题}（Ritz-Galerkin problem）：对于求解空间中的任意函数$\delta u$，从求解空间中寻找位移$u$使得下式恒成立
+\begin{equation}\label{ch_energy:galerkin}
+    \int_0^L \delta u_{,x} EA u_{,x} dx = \delta uP\vert_{x\L} + \int_0^L \delta ub dx
+\end{equation}
+其中求解空间的选择就极为重要，在第\ref{introduction}章中已经知道，当体力$b$与拉力$P$为常数时，该问题的精确解为二次多项式\eqref{ch_introduction:ext}。所以首先选择二次多项式且满足位移边界条件$u(0)=0$的求解空间进行该问题的求解，此时位移$u$和虚位移$\delta u$假设为
+\begin{subequations}\label{ch_energy:approx1}
+\begin{align}
+    u(x) &= a_1 x + a_2 x^2 \\
+    \delta u(x) &= b_1 x + b_2 x^2
+\end{align}
+\end{subequations}
+式中$a_i,i=1,2$为待定系数，而由于式\eqref{ch_energy:galerkin}对于所有求解空间中的虚位移$\delta u$都成立，所以$b_i,i=1,2$可以取任意实数。将假设的$u$和$\delta u$表达式\eqref{ch_energy:approx1}代入到里兹伽辽金问题\eqref{ch_energy:galerkin}中，方程等号左边为
+\begin{equation}
+\begin{split}
+    \int_0^L \delta u_{,x} EA u_{,x} dx &= \int_0^L (b_1 + 2b_2 x)EA(a_1 + 2a_2 x) dx \\
+    &= \begin{Bmatrix}
+        b_1 \\ b_2
+       \end{Bmatrix}^T
+       \int_0^L EA \begin{bmatrix}
+       1 & 2x \\ 2x & 4x^2 
+       \end{bmatrix} dx
+       \begin{Bmatrix}
+        a_1 \\ a_2
+       \end{Bmatrix} \\
+    &= \begin{Bmatrix}
+        b_1 \\ b_2
+       \end{Bmatrix}^T
+       EA\begin{bmatrix}
+       L & L^2 \\ L^2 & \frac{4}{3}L^3 
+       \end{bmatrix}
+       \begin{Bmatrix}
+        a_1 \\ a_2
+       \end{Bmatrix} \\
+    &= \boldsymbol b^T \boldsymbol K \boldsymbol a
+\end{split}
+\end{equation}
+上式中$\boldsymbol a$、$\boldsymbol b$为系数向量。同样地，等式右边则改写为
+\begin{equation}
+\begin{split}
+    \delta u P \vert_{x=L} + \int_0^L \delta u b dx &= (b_1 L + b_2 L^2)P + \int_0^L (b_1 x + b_2 x^2) b dx \\
+                                                    &= (b_1 L + b_2 L^2)P + (\frac{b_1 L^2}{2} + \frac{b_2 L^3}{3}) b \\
+                                                    &= (PL+\frac{b L^2}{2})b_1  + (PL^2 + \frac{b L^3}{3})b_2 \\
+                                                    &= \begin{Bmatrix}
+                                                   b_1 \\ b_2 
+                                                    \end{Bmatrix}^T \begin{Bmatrix}
+                                                   PL + \frac{bL^2}{2} \\ PL^2 + \frac{bL^3}{3}
+                                                    \end{Bmatrix} \\
+                                                    &= \boldsymbol b^T \boldsymbol f
+\end{split}
+\end{equation}
+对式\eqref{ch_energy:galerkin}两端同时消去$\boldsymbol b^T$就可以确定待定系数向量$\boldsymbol a$为
+\begin{equation}\label{ch_energy:coefficient}
+    \boldsymbol{Ka} = \boldsymbol f \Rightarrow \boldsymbol a = \boldsymbol K^{-1}\boldsymbol f = \begin{Bmatrix}
+    \frac{P+bL}{EA} \\ - \frac{b}{2EA}
+    \end{Bmatrix}
+\end{equation}
+将系数$\boldsymbol a$表达式\eqref{ch_energy:coefficient}代入式\eqref{ch_energy:approx1}可得最终位移为
+\begin{equation}\label{ch_energy:disp}
+u(x) = -\frac{b}{2EA}x^2 + \frac{P+bL}{EA}x
+\end{equation}\par
+由求得的位移结果可以看出，求解得到的位移表达式\eqref{ch_energy:disp}与解析求得的位移表达式\eqref{ch_introduction:ext}相同，这是由于此时的求解空间包含精确解。在伽辽金法的使用过程中，由于大多数情况下并不知道精确解是什么函数，所以求解空间难以包含精确解。而在此问题中，势能泛函表达式\eqref{ch_energy:weak}中包含位移一阶导数，所以求解空间至少为线性函数（一阶导数不为零）。当求解空间为满足边界条件$u(0)=0$的线性函数时，假设的位移和虚位移表达式为
+\begin{equation}
+u(x) = a_1 x, \quad \delta u(x) = b_1 x
+\end{equation}
+以同样的步骤进行求解，可得相应的矩阵$\boldsymbol K$和$\boldsymbol f$为
+\begin{equation}
+    \boldsymbol K = [EAL], \; \boldsymbol f = \{PL+\frac{bL^2}{2}\}\;\Rightarrow \boldsymbol a = \{\frac{bL}{2EA} + \frac{P}{EA}\}
+\end{equation}
+此时求解得到的位移为
+\begin{equation}\label{ch_energy:disp1}
+u(x) = (\frac{bL}{2EA} + \frac{P}{EA})x
+\end{equation}\par
+图作出线性空间位移解\eqref{ch_energy:disp1}和二次空间的位移解\eqref{ch_energy:disp}的对比图。从图中可以看出，线性求解空间得到的位移接近二次空间的到的位移，并且在求解域处（杆件左右两端）位移相等。在伽辽金法中，虚位移$\delta u$也称为权函数（Weight function），而位移$u$称为试函数（Trial function）。如果试函数和权函数的求解空间包括精确解，此时的位移$u$即为精确解。如果试函数和权函数求解空间不包括精确解，位移$u$为求解空间到精确解最近的一点近似解。
+
+\section{分段近似空间}
+由上节可知，如果采用线性空间求解精确解为二次的问题可以得到一近似解，且解在求解域中具有插值的性质（求解域两端与精确解相等）。进一步如果采用分段多项式空间进行求解，能否类似得到一个具有插值性质的解。并且随着求解域尺寸的减小，近似解逐步收敛至精确解。\par
+假设位移$u$及其变分$\delta u$在全域上为分段线性函数，且满足位移边界条件，即
+\begin{subequations}\label{ch_energy:disph}
+\begin{align}
+u(x) =
+\begin{cases}
+    a_1 x & 0 \le x \le \frac{L}{2} \\
+    a_2 + a_3 x & \frac{L}{2} < x \le L \\
+\end{cases} \\
+\delta u(x) =
+\begin{cases}
+    b_1 x & 0 \le x \le \frac{L}{2} \\
+    b_2 + b_3 x & \frac{L}{2} < x \le L \\
+\end{cases}
+\end{align}
+\end{subequations}\par
+与上节相同，将假设的虚位移与位移代入到弱形式中，弱形式左端分别为
+\begin{equation}\label{ch_energy:eq1}
+\begin{split}
+    \int_0^L \delta u_{,x}EA u_{,x} dx &= \int_0^{\frac{L}{2}} b_1 EA a_1 dx + \int_{\frac{L}{2}}^L b_3 EA a_3 dx \\
+                                       &= b_1 \frac{EAL}{2} a_1 + b_3 \frac{EAL}{2} a_3 \\
+                                       &= \begin{Bmatrix}
+                                       b_1 \\ b_2 \\ b_3 
+                                       \end{Bmatrix}^T
+                                       \begin{bmatrix}
+                                       \frac{EAL}{2} & 0 & 0 \\
+                                       0 & 0 & 0 \\
+                                       0 & 0 & \frac{EAL}{2}
+                                       \end{bmatrix}
+                                       \begin{Bmatrix}
+                                       a_1 \\ a_2 \\ a_3 
+                                       \end{Bmatrix} \\
+                                       &= \boldsymbol b^T \boldsymbol K \boldsymbol a
+\end{split}
+\end{equation}
+而等式右端为
+\begin{equation}\label{ch_energy:eq2}
+\begin{split}
+    \delta u P + \int_0^L \delta u b dx &= (b_2+b_3L)P + \int_0^{\frac{L}{2}} b_1 x b dx + \int_{\frac{L}{2}}^L (b_2+b_3 x) b dx \\
+                                        &= \frac{bL^2}{8}b_1 + (P+\frac{bL}{2})b_2 + (PL + \frac{3bL^2}{8})b_3 \\
+                                        &= \begin{Bmatrix}
+                                        b_1 \\ b_2 \\ b_3 
+                                        \end{Bmatrix}^T
+                                        \begin{Bmatrix}
+                                        \frac{bL^2}{8} \\ P+\frac{bL}{2} \\ PL + \frac{3bL^2}{8}
+                                        \end{Bmatrix} \\
+                                        &= \boldsymbol b^T \boldsymbol f
+\end{split}
+\end{equation}\par
+从式\eqref{ch_energy:eq1}中可以看出，矩阵$\boldsymbol K$不可逆，仅能确定系数$a_1$和$a_3$为
+\begin{equation}
+a_1 = \frac{bL}{4EA}, \quad a_3 = \frac{3bL}{4EA} + \frac{2P}{EA}
+\end{equation}
+此时的位移表达式为
+\begin{equation}\label{ch_energy:eq3}
+u(x) =
+\begin{cases}
+    \frac{bL}{4EA}x & 0 \le x \le \frac{L}{2} \\
+    a_2 + (\frac{3bL}{4EA} + \frac{2P}{EA})x & \frac{L}{2} \le x \le L
+\end{cases}
+\end{equation}\par
+将解得的位移表达式\eqref{ch_energy:eq3}对比精确解\eqref{ch_introduction:ext}可以看出，此时的求解得到的位移误差较大，且不连续。造成这种不连续的原因主要是近似的位移不连续造成的，即不满足\textbf{协调性}（Compatibility）。如果在位移表达式\eqref{ch_energy:disph}的基础上，进一步使假设的位移连续
+\begin{equation}\label{ch_energy:coefficient1}
+\begin{cases}
+    \frac{L}{2}a_1 = a_2 + \frac{L}{2} a_3 \\
+    \frac{L}{2}b_1 = b_2 + \frac{L}{2} b_3 
+\end{cases} \Rightarrow
+\begin{cases}
+    a_1 = \frac{2}{L}a_2 + a_3 \\
+    b_1 = \frac{2}{L}b_2 + b_3 
+\end{cases}
+\end{equation}
+将关系式\eqref{ch_energy:coefficient1}代入到式\eqref{ch_energy:eq1}和\eqref{ch_energy:eq2}此时的弱形式左右两端为
+\begin{equation}
+\begin{split}
+    \int_0^L \delta u_{,x}EA u_{,x} dx &= (\frac{2}{L}b_2+b_3) \frac{EAL}{2} (\frac{2}{L}a_2+a_3) + b_3 \frac{EAL}{2} a_3 \\
+                                       &= b_2 \frac{2EA}{L} a_2 + b_2 EA a_3 + b_3 EA a_2 + b_3 EAL a_3 \\
+                                       &= \begin{Bmatrix}
+                                       b_2 \\ b_3 
+                                       \end{Bmatrix}^T
+                                       \begin{bmatrix}
+                                       \frac{EAL}{2} & EA \\
+                                       EA & EAL
+                                       \end{bmatrix}
+                                       \begin{Bmatrix}
+                                       a_2 \\ a_3 
+                                       \end{Bmatrix} \\
+                                       &= \boldsymbol b^T \boldsymbol K \boldsymbol a
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+    \delta u P + \int_0^L \delta u b dx &= \frac{bL^2}{8}(\frac{2}{L}b_2 + b_3) + (P+\frac{bL}{2})b_2 + (PL + \frac{3bL^2}{8})b_3 \\
+                                        &= (P+\frac{3bL}{4})b_2 + (PL + \frac{bL^2}{2})b_3 \\
+                                        &= \begin{Bmatrix}
+                                        b_2 \\ b_3 
+                                        \end{Bmatrix}^T
+                                        \begin{Bmatrix}
+                                        P+\frac{3bL}{4} \\ PL + \frac{bL^2}{2}
+                                        \end{Bmatrix} = \boldsymbol b^T \boldsymbol f
+\end{split}
+\end{equation}
+此时可解得系数和相对应的位移为
+\begin{equation}
+\begin{cases}
+a_2 = \frac{bL^2}{4EA} \\
+a_3 = \frac{bL}{4EA} + \frac{P}{EA}
+\end{cases} \Rightarrow
+a_1 = \frac{2}{L}a_2 + a_3 = \frac{3bL}{4EA} + \frac{P}{EA}
+\end{equation}
+\begin{equation}
+u(x) = \begin{cases}
+(\frac{3bL}{4EA}+\frac{P}{EA})x & 0 \le x \le \frac{L}{2} \\
+\frac{bL^2}{4EA} + (\frac{bL}{4EA}+\frac{P}{EA})x & \frac{L}{2} \le x \le L
+\end{cases}
+\end{equation} \par
+对此近似节与精确解可以看出，由于满足协调性，位移误差相比于式\eqref{ch_energy:eq3}小得多，且在分段的端点处均满足插值性。但需要注意的是，求解的插值性在多维情况下难以实现，但近似空间的协调性依然是分段近似求解收敛性的保证。
+
